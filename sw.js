@@ -1,6 +1,7 @@
 // sw.js - Enhanced Service Worker for Complete Offline Support
 const CACHE_NAME = 'jinasaraswati-v1.0.0';
 const RUNTIME_CACHE = 'runtime-cache-v1';
+const BASE_PATH = '/JinaSaraswati';
 
 // All assets to cache for offline use
 const STATIC_ASSETS = [
