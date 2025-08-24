@@ -1,0 +1,133 @@
+// data/achievements.json
+{
+  "categories": {
+    "learning": {
+      "name": "शिक्षा",
+      "icon": "📚",
+      "description": "Learning achievements"
+    },
+    "daily": {
+      "name": "दैनिक",
+      "icon": "📅",
+      "description": "Daily practice achievements"
+    },
+    "chapter": {
+      "name": "अध्याय",
+      "icon": "📖",
+      "description": "Chapter completion achievements"
+    },
+    "karma": {
+      "name": "कर्म",
+      "icon": "⚡",
+      "description": "Karma-related achievements"
+    },
+    "spiritual": {
+      "name": "आध्यात्मिक",
+      "icon": "🧘",
+      "description": "Spiritual progress achievements"
+    },
+    "special": {
+      "name": "विशेष",
+      "icon": "🌟",
+      "description": "Special achievements"
+    }
+  },
+  "achievements": [
+    {
+      "id": "first_step",
+      "name": "प्रथम कदम",
+      "description": "Complete your first lesson",
+      "icon": "👣",
+      "xp": 10,
+      "category": "learning",
+      "requirements": {
+        "type": "chapters_completed",
+        "value": 1
+      }
+    },
+    {
+      "id": "daily_scholar",
+      "name": "नित्य विद्वान",
+      "description": "Answer daily Prashna for 7 days",
+      "icon": "📚",
+      "xp": 50,
+      "category": "daily",
+      "requirements": {
+        "type": "daily_streak",
+        "value": 7
+      }
+    },
+    {
+      "id": "karma_master",
+      "name": "कर्म विजेता",
+      "description": "Complete Chapter 40 - Karma Theory",
+      "icon": "🎯",
+      "xp": 100,
+      "category": "chapter",
+      "requirements": {
+        "type": "specific_chapter",
+        "value": "4_40"
+      }
+    },
+    {
+      "id": "dravya_expert",
+      "name": "द्रव्य विशेषज्ञ",
+      "description": "Complete Chapter 44 - Six Substances",
+      "icon": "💎",
+      "xp": 100,
+      "category": "chapter",
+      "requirements": {
+        "type": "specific_chapter",
+        "value": "4_44"
+      }
+    },
+    {
+      "id": "weekly_warrior",
+      "name": "साप्ताहिक योद्धा",
+      "description": "Use app for 7 consecutive days",
+      "icon": "🗓️",
+      "xp": 30,
+      "category": "daily"
+    },
+    {
+      "id": "meditation_beginner",
+      "name": "ध्यान आरंभक",
+      "description": "Meditate for 10 minutes total",
+      "icon": "🧘‍♂️",
+      "xp": 25,
+      "category": "spiritual"
+    },
+    {
+      "id": "quiz_ace",
+      "name": "प्रश्नोत्तरी विजेता",
+      "description": "Score 100% in any quiz",
+      "icon": "💯",
+      "xp": 40,
+      "category": "learning"
+    },
+    {
+      "id": "universe_explorer",
+      "name": "ब्रह्मांड अन्वेषक",
+      "description": "Visit all 4 universes",
+      "icon": "🌌",
+      "xp": 60,
+      "category": "special"
+    },
+    {
+      "id": "karma_shedder",
+      "name": "निर्जरा साधक",
+      "description": "Shed 100 karma particles",
+      "icon": "🍃",
+      "xp": 35,
+      "category": "karma"
+    },
+    {
+      "id": "perfect_week",
+      "name": "परिपूर्ण सप्ताह",
+      "description": "Complete all daily Prashnas for a week",
+      "icon": "🏆",
+      "xp": 75,
+      "category": "daily"
+    }
+  ]
+}
