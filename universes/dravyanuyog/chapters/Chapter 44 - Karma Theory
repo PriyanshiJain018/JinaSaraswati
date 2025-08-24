@@ -1,0 +1,2686 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>द्रव्यानुयोग ब्रह्माण्ड - कर्म की यात्रा</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6B46C1;
+            --secondary: #9333EA;
+            --accent: #F59E0B;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --success: #10B981;
+            --danger: #EF4444;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .soul-loader {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 70%);
+            box-shadow: 0 0 60px rgba(255,255,255,0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Main Menu */
+        .main-menu {
+            display: none;
+            min-height: 100vh;
+            padding: 2rem;
+            background: var(--gradient);
+        }
+
+        .main-menu.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stage-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+        }
+
+        .stage-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .stage-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .stage-card.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+        }
+
+        .stage-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .stage-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stage-description {
+            color: var(--dark);
+            opacity: 0.8;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+
+        /* Game Container */
+        .game-container {
+            display: none;
+            min-height: 100vh;
+            background: var(--light);
+        }
+
+        .game-container.active {
+            display: block;
+        }
+
+        /* Header */
+        .game-header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .score-display {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .lesson-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Karma Visualization */
+        .soul-container {
+            display: flex;
+            justify-content: center;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .soul-avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 50%, #FF6347 100%);
+            position: relative;
+            animation: glow 3s ease-in-out infinite;
+            box-shadow: 0 0 60px rgba(255,215,0,0.6);
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 60px rgba(255,215,0,0.6); }
+            50% { box-shadow: 0 0 80px rgba(255,215,0,0.9); }
+        }
+
+        .karma-layer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .karma-layer.active {
+            opacity: 0.7;
+        }
+
+        /* Karma Cards */
+        .karma-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .karma-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .karma-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .karma-card.selected {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
+        .karma-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .karma-description {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            margin-bottom: 1rem;
+        }
+
+        .karma-analogy {
+            font-style: italic;
+            font-size: 0.85rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Interactive Elements */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Minigame Container */
+        .minigame-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .game-tile {
+            aspect-ratio: 1;
+            background: var(--light);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-tile:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .game-tile.matched {
+            background: var(--success);
+            color: white;
+            pointer-events: none;
+        }
+
+        .game-tile.flipped {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+
+        .options {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .option {
+            background: var(--light);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(107, 70, 193, 0.1);
+        }
+
+        .option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .option.incorrect {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            animation: slideIn 0.3s;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .modal-text {
+            color: var(--dark);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2rem;
+            }
+
+            .stage-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .karma-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Karma State Visualizer */
+        .karma-state-timeline {
+            position: relative;
+            padding: 2rem 0;
+            margin: 2rem 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 1rem;
+            margin: 1rem 0;
+            width: 45%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 55%;
+            text-align: left;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -10px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -10px;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Achievement System */
+        .achievement-popup {
+            position: fixed;
+            top: 2rem;
+            right: -400px;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: right 0.5s;
+            z-index: 2000;
+        }
+
+        .achievement-popup.show {
+            right: 2rem;
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .achievement-desc {
+            font-size: 0.9rem;
+            color: var(--dark);
+            opacity: 0.8;
+        }
+
+        .case-study-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .drag-item {
+            background: white;
+            padding: 1rem;
+            margin: 0.5rem;
+            border-radius: 8px;
+            cursor: move;
+            border: 2px solid var(--primary);
+        }
+
+        .drag-item.dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zone {
+            min-height: 100px;
+            background: rgba(107, 70, 193, 0.1);
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .drop-zone.drag-over {
+            background: rgba(107, 70, 193, 0.2);
+        }
+        /* Better Mobile Support */
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 1.8rem;
+                padding: 0 1rem;
+            }
+            
+            .stage-card {
+                padding: 1.5rem;
+                margin: 0.5rem;
+            }
+            
+            .karma-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-board {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .timeline-item {
+                width: 100% !important;
+                left: 0 !important;
+                text-align: left !important;
+                padding: 0.5rem !important;
+            }
+            
+            .timeline-line {
+                left: 10px !important;
+            }
+            
+            .timeline-dot {
+                left: 0 !important;
+            }
+            
+            .soul-avatar {
+                width: 150px !important;
+                height: 150px !important;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .score-display {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* Fix drag and drop for mobile */
+            .drag-item {
+                touch-action: none;
+            }
+        }
+
+        /* Ensure touch events work properly */
+        @media (hover: none) {
+            .karma-card:active {
+                transform: scale(0.98);
+            }
+            
+            .action-btn:active {
+                transform: scale(0.98);
+            }
+            
+            .stage-card:active:not(.locked) {
+                transform: scale(0.98);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="soul-loader"></div>
+        <h2 style="color: white; margin-top: 2rem;">आपकी यात्रा तैयार हो रही है...</h2>
+    </div>
+
+    <!-- Main Menu -->
+    <div class="main-menu" id="mainMenu">
+        <div class="menu-container">
+            <h1 class="game-title">द्रव्यानुयोग ब्रह्माण्ड</h1>
+            <p class="subtitle">कर्म के विज्ञान की यात्रा</p>
+            
+            <div class="stage-grid">
+                <div class="stage-card" onclick="startStage(1)">
+                    <div class="stage-icon">📿</div>
+                    <div class="stage-title">चरण १: कर्म के प्रकार</div>
+                    <div class="stage-description">आत्मा को बांधने वाले ८ प्रकार के कर्मों की खोज</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress1" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="stage-card" onclick="startStage(2)">
+                    <div class="stage-icon">🔄</div>
+                    <div class="stage-title">चरण २: कर्म की दस अवस्थाएं</div>
+                    <div class="stage-description">बंध से लेकर निकाचित तक की १० अवस्थाओं को जानें</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress2" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="stage-card" onclick="startStage(3)">
+                    <div class="stage-icon">⏳</div>
+                    <div class="stage-title">चरण ३: आयु कर्म विशेष</div>
+                    <div class="stage-description">जीवनकाल निर्धारण के रहस्यों में महारत</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress3" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="stage-card" id="masterStage" onclick="startMasterChallenge()">
+                    <div class="stage-icon">🎮</div>
+                    <div class="stage-title">कर्म मास्टर चुनौती</div>
+                    <div class="stage-description">अपनी संपूर्ण समझ का परीक्षण करें</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress4" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container" id="gameContainer">
+        <div class="game-header">
+            <button class="back-btn" onclick="backToMenu()">← मुख्य मेनू पर वापस</button>
+            <div class="score-display">
+                <div class="score-item">
+                    <span>⭐ अंक:</span>
+                    <span id="scoreValue">0</span>
+                </div>
+                <div class="score-item">
+                    <span>🏆 स्तर:</span>
+                    <span id="levelValue">1</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson-content" id="lessonContent">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Achievement Popup -->
+    <div class="achievement-popup" id="achievementPopup">
+        <div class="achievement-icon">🏆</div>
+        <div class="achievement-text">
+            <div class="achievement-title" id="achievementTitle">उपलब्धि अनलॉक!</div>
+            <div class="achievement-desc" id="achievementDesc">आपने एक नई अवधारणा में महारत हासिल की</div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">बहुत अच्छे!</h2>
+            <p class="modal-text" id="modalText">आपने यह खंड पूरा कर लिया</p>
+            <button class="action-btn" onclick="closeModal()">जारी रखें</button>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            currentStage: null,
+            score: 0,
+            level: 1,
+            completedLessons: [],
+            unlockedAchievements: [],
+            karmaKnowledge: {
+                types: [],
+                states: [],
+                causes: []
+            },
+            masterUnlocked: false,
+            stageProgress: {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0
+            }
+        };
+
+        // Karma Data - Based on Scriptural Text
+        const karmaData = {
+            types: [
+                {
+                    id: 'jnanavarana',
+                    name: 'ज्ञानावरण कर्म',
+                    hindi: 'ज्ञानावरण कर्म',
+                    description: 'जो आत्मा के ज्ञान गुण को ढकता है',
+                    function: 'आत्मा के ज्ञान गुण को आवृत करता है',
+                    analogy: 'देवता के मुख पर ढके वस्त्र के समान',
+                    icon: '🎭',
+                    color: '#6B46C1',
+                    causes: [
+                        'शिक्षा गुरु का नाम छिपाना',
+                        'किसी के अध्ययन में बाधा डालना',
+                        'पुस्तक फाड़ देना, पुस्तक की चोरी करना',
+                        'ज्ञान होने पर भी ईर्ष्या के कारण ज्ञान न देना',
+                        'शास्त्र विक्रय करना'
+                    ],
+                    story: 'मैंने बाहुबली जैसे महापराक्रमी को एक वर्ष तक खड़ा रखा केवलज्ञान नहीं होने दिया'
+                },
+                {
+                    id: 'darshanavarana',
+                    name: 'दर्शनावरण कर्म',
+                    hindi: 'दर्शनावरण कर्म',
+                    description: 'जो आत्मा के दर्शन गुण को ढकता है',
+                    function: 'आत्मा की दर्शन शक्ति को आवृत करता है',
+                    analogy: 'द्वारपाल के समान',
+                    icon: '🚪',
+                    color: '#9333EA',
+                    causes: [
+                        'दिन में सोना',
+                        'आलस्य',
+                        'नास्तिकता',
+                        'सम्यग्दृष्टि में दूषण लगाना',
+                        'कुतीर्थ की प्रशंसा'
+                    ],
+                    story: 'मैंने यथाख्यात चारित्र वाले को भी आत्मा का दर्शन नहीं होने दिया'
+                },
+                {
+                    id: 'vedaniya',
+                    name: 'वेदनीय कर्म',
+                    hindi: 'वेदनीय कर्म',
+                    description: 'जो सुख-दुःख का वेदन (अनुभूति) कराता है',
+                    function: 'सुख और दुःख की अनुभूति कराता है',
+                    analogy: 'शक्कर की चाशनी से लपेटी तलवार के समान',
+                    icon: '⚔️',
+                    color: '#F59E0B',
+                    causes: {
+                        साता: ['सभी प्राणियों पर अनुकम्पा', 'दान देना', 'हृदय में शान्ति रखना'],
+                        असाता: ['दुःख, शोक, ताप', 'वध और परिदेवन', 'क्रूरता']
+                    },
+                    story: 'मैंने श्रीपाल जैसे कोटिभट्ट को कोढ़ी बनाकर निकलवाया, मुनि वादिराज के शरीर में सौ वर्ष तक कुष्ठ रोग कराया'
+                },
+                {
+                    id: 'mohaniya',
+                    name: 'मोहनीय कर्म',
+                    hindi: 'मोहनीय कर्म',
+                    description: 'जो आत्मा के सम्यक्त्व और चारित्र गुण को घातता है',
+                    function: 'सम्यक्त्व और चारित्र पर आक्रमण करता है',
+                    analogy: 'मदिरा के समान',
+                    icon: '🌪️',
+                    color: '#EF4444',
+                    causes: [
+                        'केवली भगवान्, श्रुत, संघ में झूठे दोष लगाना',
+                        'कषायों की तीव्रता',
+                        'किसी को चारित्र लेने से रोकना',
+                        'चारित्र से भ्रष्ट करना'
+                    ],
+                    story: 'मैंने राम जैसे महान् पुरुष को लक्ष्मण के मृतक शरीर को ६ माह तक कंधे पर रखकर घुमवाया, सीता की जङ्गलों में खोज कराई'
+                },
+                {
+                    id: 'ayu',
+                    name: 'आयु कर्म',
+                    hindi: 'आयु कर्म',
+                    description: 'जो प्राणी को मनुष्य आदि के शरीर में रोके रखता है',
+                    function: 'जीवनकाल निर्धारित करता है और शरीर में बांधे रखता है',
+                    analogy: 'बेड़ी के समान',
+                    icon: '⛓️',
+                    color: '#10B981',
+                    causes: {
+                        नरकायु: 'बहुत आरम्भ एवं बहुत परिग्रह',
+                        तिर्यञ्चायु: 'मायाचारी, विश्वासघात',
+                        मनुष्यायु: 'स्वभाव से मृदुस्वभावी, अल्प आरम्भ, अल्प परिग्रह',
+                        देवायु: 'संयम पालन, कषाय की मंदता, दान देना'
+                    },
+                    story: 'मैंने राजा श्रेणिक जैसे क्षायिक सम्यग्दृष्टि को एवं रावण को भी नरक में रोक रखा है'
+                },
+                {
+                    id: 'nama',
+                    name: 'नाम कर्म',
+                    hindi: 'नाम कर्म',
+                    description: 'जो अच्छे-बुरे शरीर की संरचना करता है',
+                    function: 'शरीर का प्रकार और रूप निर्धारित करता है',
+                    analogy: 'चित्रकार (पेंटर) के समान',
+                    icon: '🎨',
+                    color: '#8B5CF6',
+                    causes: {
+                        अशुभ: 'मन, वचन, काय की कुटिलता, चुगलखोरी, धोखा देना',
+                        शुभ: 'मन, वचन, काय की सरलता, चित्त की स्थिरता',
+                        तीर्थङ्कर: 'सोलहकारण भावना'
+                    },
+                    story: 'मैंने अनेक को गूँगा, कुबड़ा, काला, अष्टावक्र बनाया'
+                },
+                {
+                    id: 'gotra',
+                    name: 'गोत्र कर्म',
+                    hindi: 'गोत्र कर्म',
+                    description: 'जिस कर्म के उदय से जीव को नीच व उच्च गोत्र की प्राप्ति होती है',
+                    function: 'सामाजिक स्थिति और कुल निर्धारित करता है',
+                    analogy: 'कुम्भकार के समान',
+                    icon: '🏺',
+                    color: '#059669',
+                    causes: {
+                        उच्च: 'अपनी निंदा, दूसरे की प्रशंसा, विनम्रता',
+                        नीच: 'परनिंदा, आत्म प्रशंसा, अहंकार'
+                    },
+                    story: 'मैंने बहुतों को ऊँच-नीच कुल में डाला'
+                },
+                {
+                    id: 'antaraya',
+                    name: 'अंतराय कर्म',
+                    hindi: 'अंतराय कर्म',
+                    description: 'जो दान, लाभ, भोग, उपभोग एवं वीर्य में विघ्न डालता है',
+                    function: 'दान, लाभ और भोग में बाधा उत्पन्न करता है',
+                    analogy: 'भण्डारी के समान',
+                    icon: '🔒',
+                    color: '#DC2626',
+                    causes: [
+                        'दान में बाधा उपस्थित करना',
+                        'जिन पूजा का निषेध करना',
+                        'निर्माल्य द्रव्य का सेवन करना',
+                        'अपनी शक्ति को छिपाना'
+                    ],
+                    story: 'मैंने आदिनाथ मुनि को ७ माह ९ दिन तक आहार नहीं मिलने दिया'
+                }
+            ],
+            states: [
+                {
+                    name: 'बंध',
+                    hindi: 'बंध',
+                    description: 'द्वित्व का त्याग करके एकत्व की प्राप्ति - प्रारंभिक कर्म बंधन',
+                    example: '१० वर्ष के लिए नौकरी पक्की हो जाना',
+                    gunsthana: '१-१३'
+                },
+                {
+                    name: 'सत्त्व',
+                    hindi: 'सत्त्व',
+                    description: 'कर्म बंध के बाद और फल देने से पूर्व बीच की स्थिति',
+                    example: 'नौकरी मिलने और शुरू करने के बीच का समय',
+                    gunsthana: '१-१४'
+                },
+                {
+                    name: 'उदय',
+                    hindi: 'उदय',
+                    description: 'द्रव्य, क्षेत्र, काल और भाव के अनुसार कर्मों का फल देना',
+                    example: 'वास्तव में नौकरी शुरू करना',
+                    gunsthana: '१-१४'
+                },
+                {
+                    name: 'उदीरणा',
+                    hindi: 'उदीरणा',
+                    description: 'आबाधा काल के पूर्व कर्मों का उदय में आ जाना',
+                    example: 'निर्धारित समय से पहले नौकरी शुरू करना',
+                    gunsthana: '१-१३'
+                },
+                {
+                    name: 'उत्कर्षण',
+                    hindi: 'उत्कर्षण',
+                    description: 'पूर्व बद्ध कर्मों की स्थिति और अनुभाग में वृद्धि',
+                    example: 'नौकरी १० से ११ वर्ष के लिए बढ़ जाना',
+                    gunsthana: '१-१३'
+                },
+                {
+                    name: 'अपकर्षण',
+                    hindi: 'अपकर्षण',
+                    description: 'पूर्वबद्ध कर्मों की स्थिति व अनुभाग में हानि',
+                    example: 'नौकरी १० से ९ वर्ष के लिए कम हो जाना',
+                    gunsthana: '१-१३'
+                },
+                {
+                    name: 'संक्रमण',
+                    hindi: 'संक्रमण',
+                    description: 'कर्म का अन्य प्रकृति रूप परिणमन',
+                    example: 'दूसरी फैक्ट्री में स्थानांतरण',
+                    gunsthana: '१-१०'
+                },
+                {
+                    name: 'उपशम',
+                    hindi: 'उपशम',
+                    description: 'कर्म का उदय में न आना, विनाश के बिना दमन',
+                    example: 'फैक्ट्री बंद, चाबी का इंतजार',
+                    gunsthana: '१-८'
+                },
+                {
+                    name: 'निधत्ति',
+                    hindi: 'निधत्ति',
+                    description: 'कर्म का उदयावली में लाने में असमर्थता',
+                    example: 'समय या स्थान नहीं बदल सकते',
+                    gunsthana: '१-८'
+                },
+                {
+                    name: 'निकाचित',
+                    hindi: 'निकाचित',
+                    description: 'कर्म में किसी भी प्रकार का परिवर्तन असंभव',
+                    example: 'सब कुछ निश्चित, कोई परिवर्तन संभव नहीं',
+                    gunsthana: '१-८'
+                }
+            ],
+            historicalCases: [
+                {
+                    title: 'राजा श्रेणिक का परिवर्तन',
+                    description: 'राजा श्रेणिक ने प्रारंभ में ३३ सागर की नरकायु बांधी थी, लेकिन क्षायिक सम्यग्दर्शन प्राप्त करने पर अपकर्षण द्वारा इसे ८४,००० वर्ष कर लिया।',
+                    karmaState: 'अपकर्षण',
+                    lesson: 'शुभ परिणामों से कर्म की स्थिति में कमी हो सकती है।'
+                },
+                {
+                    title: 'खदिरसार का उदाहरण',
+                    description: 'चारित्रसार में खदिरसार का उदाहरण आता है जो उत्कर्षण का प्रसिद्ध उदाहरण है।',
+                    karmaState: 'उत्कर्षण',
+                    lesson: 'तीव्र कषाय से कर्म की स्थिति बढ़ जाती है।'
+                },
+                {
+                    title: 'जिनबिम्ब दर्शन का प्रभाव',
+                    description: 'आचार्य वीरसेन स्वामी कहते हैं - जिनबिम्ब के दर्शन से निधत्ति और निकाचित रूप भी मिथ्यात्वादि कर्म का क्षय होता है।',
+                    karmaState: 'निधत्ति/निकाचित',
+                    lesson: 'पवित्र दर्शन से अटल कर्म भी नष्ट हो सकते हैं।'
+                }
+            ]
+        };
+
+        // Initialize
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('mainMenu').classList.add('active');
+            }, 2000);
+            
+            // Load saved progress
+            loadProgress();
+            checkMasterUnlock();
+        };
+        // Check if master challenge should be unlocked
+        function checkMasterUnlock() {
+            const totalProgress = gameState.stageProgress[1] + gameState.stageProgress[2] + gameState.stageProgress[3];
+            
+            if (totalProgress >= 250 && !gameState.masterUnlocked) { // All three stages completed
+                gameState.masterUnlocked = true;
+                const masterCard = document.getElementById('masterStage');
+                if (masterCard) {
+                    masterCard.classList.remove('locked');
+                    showAchievement('मास्टर चुनौती अनलॉक!', 'अब आप अंतिम चुनौती के लिए तैयार हैं!');
+                }
+            }
+            
+            // Update the visual state of master stage
+            const masterCard = document.getElementById('masterStage');
+            if (masterCard && gameState.masterUnlocked) {
+                masterCard.classList.remove('locked');
+            }
+        }
+
+        // Start Stage
+        function startStage(stage) {
+            gameState.currentStage = stage;
+            document.getElementById('mainMenu').classList.remove('active');
+            document.getElementById('gameContainer').classList.add('active');
+            
+            switch(stage) {
+                case 1:
+                    loadStage1();
+                    break;
+                case 2:
+                    loadStage2();
+                    break;
+                case 3:
+                    loadStage3();
+                    break;
+            }
+        }
+
+        // Stage 1: Anatomy of Karma
+        function loadStage1() {
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="lesson-section fade-in">
+                    <h2 class="section-title">
+                        <span>📿</span>
+                        <span>आत्मा के आठ आवरण</span>
+                    </h2>
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">
+                        संसार में सबसे ज्यादा ईमानदार है तो वह है कर्म। मुनि हो, श्रावक हो, राजा हो या रंक, 
+                        युवा हो या वृद्ध, कर्म किसी के साथ पक्षपात नहीं करता। जीव जैसा कर्म करता है वैसा ही उसे फल मिलता है। 
+                        आइये जानें आत्मा को बांधने वाले ८ प्रकार के कर्मों को।
+                    </p>
+                    
+                    <div class="soul-container">
+                        <div class="soul-avatar" id="soulAvatar">
+                            <div class="karma-layer" id="layer1" style="background: rgba(107,70,193,0.3);"></div>
+                            <div class="karma-layer" id="layer2" style="background: rgba(147,51,234,0.3);"></div>
+                            <div class="karma-layer" id="layer3" style="background: rgba(245,158,11,0.3);"></div>
+                            <div class="karma-layer" id="layer4" style="background: rgba(239,68,68,0.3);"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="karma-grid" id="karmaGrid">
+                        ${karmaData.types.map(karma => `
+                            <div class="karma-card" onclick="selectKarma('${karma.id}')" data-karma="${karma.id}">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">${karma.icon}</div>
+                                <div class="karma-name">${karma.name}</div>
+                                <div class="karma-description">${karma.description}</div>
+                                <div class="karma-analogy">"${karma.analogy}"</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="startKarmaCatcher()">कर्म पकड़ने का खेल 🎮</button>
+                        <button class="action-btn" onclick="showKarmaQuiz()">ज्ञान परीक्षा 📝</button>
+                        <button class="action-btn" onclick="showKarmaStories()">कर्म कथाएं 📚</button>
+                        <button class="action-btn" onclick="startMemoryGame()">स्मृति खेल 🧠</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Stage 2: Lifecycle of Karma
+        function loadStage2() {
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="lesson-section fade-in">
+                    <h2 class="section-title">
+                        <span>🔄</span>
+                        <span>कर्म की दस अवस्थाएं</span>
+                    </h2>
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">
+                        कर्म स्थिर नहीं है - यह परिवर्तनों से गुजरता है। जैसे नौकरी का अनुबंध जिसे 
+                        संशोधित, विस्तारित या समय से पहले समाप्त किया जा सकता है, कर्म की १० अलग-अलग अवस्थाएं हैं।
+                    </p>
+                    
+                    <div class="karma-state-timeline">
+                        <div class="timeline-line"></div>
+                        ${karmaData.states.map((state, index) => `
+                            <div class="timeline-item slide-up" style="animation-delay: ${index * 0.1}s">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3 style="color: var(--primary); margin-bottom: 0.5rem;">
+                                        ${state.name} (${state.hindi})
+                                    </h3>
+                                    <p style="margin-bottom: 0.5rem;">${state.description}</p>
+                                    <p style="font-style: italic; color: var(--accent);">
+                                        उदाहरण: ${state.example}
+                                    </p>
+                                    <small style="color: var(--dark); opacity: 0.7;">
+                                        गुणस्थान में सक्रिय: ${state.gunsthana}
+                                    </small>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="startKarmaSimulator()">कर्म प्रवाह सिमुलेटर 🎯</button>
+                        <button class="action-btn" onclick="showCaseStudies()">ऐतिहासिक उदाहरण 📖</button>
+                        <button class="action-btn" onclick="testKarmaStates()">अवस्था चुनौती 🎲</button>
+                        <button class="action-btn" onclick="startDragDropGame()">क्रम व्यवस्था खेल 🎯</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Stage 3: Āyu Karma Special
+        function loadStage3() {
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="lesson-section fade-in">
+                    <h2 class="section-title">
+                        <span>⏳</span>
+                        <span>आयु कर्म: जीवनकाल का रहस्य</span>
+                    </h2>
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">
+                        सात कर्मों का बंध प्रति समय होता रहता है किन्तु आयु कर्म विशिष्ट समय पर ही बंधता है।
+                        यह निर्धारित करता है कि आत्मा किसी विशेष शरीर और अस्तित्व के रूप में कितने समय तक रहती है।
+                    </p>
+                    
+                    <div class="lesson-section" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">८ अपकर्ष काल</h3>
+                        <p style="margin-bottom: 1rem;">
+                            आयु कर्म का बंध जीवनकाल में ८ विशिष्ट अवसरों पर हो सकता है। 
+                            इसे ऐसे समझें जैसे रेल का समय सारणी - आप केवल निश्चित स्टेशनों पर ही चढ़ सकते हैं।
+                        </p>
+                        
+                        <div style="background: white; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                            <h4>७२९ वर्ष के जीवनकाल के लिए:</h4>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="padding: 0.5rem; border-bottom: 1px solid #eee;">
+                                    1️⃣ ४८६ वर्ष पर (२/३ बिंदु): प्रथम अवसर
+                                </li>
+                                <li style="padding: 0.5rem; border-bottom: 1px solid #eee;">
+                                    2️⃣ ६४८ वर्ष पर: द्वितीय अवसर
+                                </li>
+                                <li style="padding: 0.5rem; border-bottom: 1px solid #eee;">
+                                    3️⃣ ७०२ वर्ष पर: तृतीय अवसर
+                                </li>
+                                <li style="padding: 0.5rem;">
+                                    ...और इसी प्रकार, शेष समय के २/३ भाग पर
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="lesson-section" style="background: linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%);">
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">अकाल मरण</h3>
+                        <p style="margin-bottom: 1rem;">
+                            जैसे मिट्टी का घड़ा स्वाभाविक रूप से खाली होने से पहले टूट सकता है, 
+                            वैसे ही जीवन इन कारणों से समय से पहले समाप्त हो सकता है:
+                        </p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                ☠️ विष
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                🩸 रक्तक्षय
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                😨 अत्यधिक भय
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                ⚔️ शस्त्र
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                😰 संक्लेश
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                💨 श्वास अवरोध
+                            </div>
+                        </div>
+                        <p style="margin-top: 1rem; font-style: italic;">
+                            नोट: यह केवल कर्मभूमि के मनुष्यों और तिर्यंचों में होता है, 
+                            देव या नारकी जीवों में नहीं।
+                        </p>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="startLifespanCalculator()">जीवनकाल गणक 🧮</button>
+                        <button class="action-btn" onclick="showDeathTransition()">आत्मा की यात्रा 🌟</button>
+                        <button class="action-btn" onclick="ayuQuiz()">आयु चुनौती 📋</button>
+                        <button class="action-btn" onclick="startVigrahGatiGame()">विग्रह गति सिमुलेटर 🚀</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Historical Case Studies
+        function showCaseStudies() {
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="lesson-section">
+                    <h2 class="section-title">📖 ऐतिहासिक उदाहरण</h2>
+                    <p style="margin-bottom: 2rem;">शास्त्रों में वर्णित कर्म अवस्थाओं के वास्तविक उदाहरण</p>
+                    
+                    ${karmaData.historicalCases.map((case_study, index) => `
+                        <div class="case-study-card">
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;">${case_study.title}</h3>
+                            <p style="margin-bottom: 1rem;">${case_study.description}</p>
+                            <div style="display: flex; gap: 2rem; margin-top: 1rem;">
+                                <div>
+                                    <strong>कर्म अवस्था:</strong> ${case_study.karmaState}
+                                </div>
+                                <div>
+                                    <strong>शिक्षा:</strong> ${case_study.lesson}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="loadStage2()">वापस जाएं</button>
+                        <button class="action-btn" onclick="startCaseStudyQuiz()">केस स्टडी प्रश्नोत्तरी</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Case Study Quiz
+        function startCaseStudyQuiz() {
+            const questions = [
+                {
+                    question: 'राजा श्रेणिक ने किस अवस्था द्वारा अपनी नरकायु कम की?',
+                    options: ['उत्कर्षण', 'अपकर्षण', 'संक्रमण', 'उपशम'],
+                    correct: 1
+                },
+                {
+                    question: 'जिनबिम्ब दर्शन से कौन से कर्म नष्ट हो सकते हैं?',
+                    options: ['केवल बंध', 'केवल सत्त्व', 'निधत्ति और निकाचित', 'केवल उदय'],
+                    correct: 2
+                },
+                {
+                    question: 'खदिरसार किस कर्म अवस्था का उदाहरण है?',
+                    options: ['अपकर्षण', 'उत्कर्षण', 'उदीरणा', 'उपशम'],
+                    correct: 1
+                }
+            ];
+            
+            showQuiz(questions, 'केस स्टडी प्रश्नोत्तरी');
+        }
+
+        // Test Karma States - Comprehensive Quiz
+        function testKarmaStates() {
+            const questions = [
+                {
+                    question: 'कर्म की कितनी अवस्थाएं होती हैं?',
+                    options: ['८', '९', '१०', '१२'],
+                    correct: 2
+                },
+                {
+                    question: 'कौन सी अवस्था में कर्म फल नहीं देता लेकिन अस्तित्व में रहता है?',
+                    options: ['बंध', 'सत्त्व', 'उदय', 'उदीरणा'],
+                    correct: 1
+                },
+                {
+                    question: 'किस अवस्था में कर्म में कोई परिवर्तन संभव नहीं?',
+                    options: ['निधत्ति', 'उपशम', 'निकाचित', 'संक्रमण'],
+                    correct: 2
+                },
+                {
+                    question: 'बंध करण किस गुणस्थान तक होता है?',
+                    options: ['८', '१०', '१३', '१४'],
+                    correct: 2
+                },
+                {
+                    question: 'फैक्ट्री बंद होना किस अवस्था का उदाहरण है?',
+                    options: ['उदय', 'उपशम', 'उदीरणा', 'संक्रमण'],
+                    correct: 1
+                }
+            ];
+            
+            showQuiz(questions, 'कर्म अवस्था चुनौती');
+        }
+
+        // Master Challenge
+        function startMasterChallenge() {
+            if (!gameState.masterUnlocked) {
+                showModal('अभी उपलब्ध नहीं', 'पहले सभी तीन चरण पूर्ण करें!');
+                return;
+            }
+            
+            gameState.currentStage = 4;
+            document.getElementById('mainMenu').classList.remove('active');
+            document.getElementById('gameContainer').classList.add('active');
+            
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="lesson-section">
+                    <h2 class="section-title">
+                        <span>🎮</span>
+                        <span>कर्म मास्टर चुनौती</span>
+                    </h2>
+                    <p style="margin-bottom: 2rem;">
+                        अपने संपूर्ण कर्म ज्ञान का परीक्षण करें! यह अंतिम चुनौती आपके सभी सीखे गए पाठों को परखेगी।
+                    </p>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="startComprehensiveQuiz()">व्यापक प्रश्नोत्तरी 📝</button>
+                        <button class="action-btn" onclick="startKarmaMatchChallenge()">कर्म मैच चैलेंज 🎯</button>
+                        <button class="action-btn" onclick="startTimedChallenge()">समय चुनौती ⏱️</button>
+                        <button class="action-btn" onclick="startScenarioAnalysis()">परिदृश्य विश्लेषण 🔍</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Comprehensive Quiz
+        function startComprehensiveQuiz() {
+            const questions = [
+                {
+                    question: 'घातिया कर्म कितने हैं?',
+                    options: ['३', '४', '५', '६'],
+                    correct: 1
+                },
+                {
+                    question: 'किस कर्म का उदाहरण भण्डारी के समान है?',
+                    options: ['गोत्र', 'नाम', 'अंतराय', 'आयु'],
+                    correct: 2
+                },
+                {
+                    question: 'आयु कर्म का बंध कितने अपकर्ष काल में होता है?',
+                    options: ['६', '७', '८', '९'],
+                    correct: 2
+                },
+                {
+                    question: 'गोमूत्रिका गति में कितने समय लगते हैं?',
+                    options: ['१', '२', '३', '४'],
+                    correct: 3
+                },
+                {
+                    question: 'किस कर्म ने बाहुबली को केवलज्ञान से रोका?',
+                    options: ['ज्ञानावरण', 'दर्शनावरण', 'मोहनीय', 'अंतराय'],
+                    correct: 0
+                },
+                {
+                    question: 'सोलहकारण भावना से कौन सा कर्म बंधता है?',
+                    options: ['उच्च गोत्र', 'तीर्थंकर नाम', 'देवायु', 'साता वेदनीय'],
+                    correct: 1
+                },
+                {
+                    question: 'राजा श्रेणिक ने अपनी आयु कितनी कर ली थी?',
+                    options: ['३३ सागर', '८४ हजार वर्ष', '१ पल्य', '७ दिन'],
+                    correct: 1
+                },
+                {
+                    question: 'किस गति के जीवों का अकाल मरण नहीं होता?',
+                    options: ['मनुष्य', 'तिर्यंच', 'देव और नारकी', 'सभी का होता है'],
+                    correct: 2
+                }
+            ];
+            
+            showQuiz(questions, 'व्यापक कर्म ज्ञान परीक्षा', true);
+        }
+
+        // Memory Game
+        function startMemoryGame() {
+            const content = document.getElementById('lessonContent');
+            const karmaPairs = karmaData.types.slice(0, 4).map(k => [k.icon, k.name]);
+            const tiles = [...karmaPairs, ...karmaPairs].sort(() => Math.random() - 0.5);
+            
+            let flippedTiles = [];
+            let matchedPairs = 0;
+            
+            content.innerHTML = `
+                <div class="minigame-container">
+                    <h2 style="color: var(--primary); margin-bottom: 1rem;">कर्म स्मृति खेल</h2>
+                    <p>मिलान करें कर्म के चिह्न और नाम</p>
+                    
+                    <div class="game-board">
+                        ${tiles.map((tile, index) => `
+                            <div class="game-tile" data-index="${index}" data-value="${tile}" onclick="flipTile(${index})">
+                                ?
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            window.flipTile = function(index) {
+                const tile = document.querySelector(`[data-index="${index}"]`);
+                if (tile.classList.contains('matched') || tile.classList.contains('flipped')) return;
+                
+                tile.classList.add('flipped');
+                tile.textContent = tiles[index];
+                flippedTiles.push({index, value: tiles[index]});
+                
+                if (flippedTiles.length === 2) {
+                    setTimeout(() => {
+                        if (flippedTiles[0].value === flippedTiles[1].value) {
+                            document.querySelector(`[data-index="${flippedTiles[0].index}"]`).classList.add('matched');
+                            document.querySelector(`[data-index="${flippedTiles[1].index}"]`).classList.add('matched');
+                            matchedPairs++;
+                            
+                            if (matchedPairs === 4) {
+                                updateScore(200);
+                                showModal('बधाई!', 'आपने सभी जोड़े मिला लिए!');
+                            }
+                        } else {
+                            document.querySelector(`[data-index="${flippedTiles[0].index}"]`).classList.remove('flipped');
+                            document.querySelector(`[data-index="${flippedTiles[1].index}"]`).classList.remove('flipped');
+                            document.querySelector(`[data-index="${flippedTiles[0].index}"]`).textContent = '?';
+                            document.querySelector(`[data-index="${flippedTiles[1].index}"]`).textContent = '?';
+                        }
+                        flippedTiles = [];
+                    }, 1000);
+                }
+            };
+        }
+
+        // Drag and Drop Game for Karma States
+        function startDragDropGame() {
+            const content = document.getElementById('lessonContent');
+            const shuffledStates = [...karmaData.states].sort(() => Math.random() - 0.5);
+            
+            content.innerHTML = `
+                <div class="minigame-container">
+                    <h2 style="color: var(--primary); margin-bottom: 1rem;">कर्म अवस्था क्रम व्यवस्था</h2>
+                    <p>कर्म अवस्थाओं को सही क्रम में व्यवस्थित करें (बंध से निकाचित तक)</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <h3>अव्यवस्थित अवस्थाएं:</h3>
+                            <div id="sourceContainer">
+                                ${shuffledStates.map((state, index) => `
+                                    <div class="drag-item" draggable="true" data-state="${state.name}" id="item-${index}">
+                                        ${state.name} - ${state.description}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3>सही क्रम में रखें:</h3>
+                            <div class="drop-zone" id="dropZone">
+                                यहाँ खींचकर छोड़ें
+                            </div>
+                            <button class="action-btn" onclick="checkOrder()" style="margin-top: 1rem;">जांचें</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            setupDragAndDrop();
+        }
+
+        function setupDragAndDrop() {
+            const dragItems = document.querySelectorAll('.drag-item');
+            const dropZone = document.getElementById('dropZone');
+            
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                    e.target.classList.add('dragging');
+                });
+                
+                item.addEventListener('dragend', function(e) {
+                    e.target.classList.remove('dragging');
+                });
+            });
+            
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+            
+            dropZone.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
+            
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                const id = e.dataTransfer.getData('text/plain');
+                const draggableElement = document.getElementById(id);
+                
+                if (this.textContent === 'यहाँ खींचकर छोड़ें') {
+                    this.textContent = '';
+                }
+                
+                this.appendChild(draggableElement);
+            });
+        }
+
+        window.checkOrder = function() {
+            const dropZone = document.getElementById('dropZone');
+            const items = dropZone.querySelectorAll('.drag-item');
+            const correctOrder = ['बंध', 'सत्त्व', 'उदय', 'उदीरणा', 'उत्कर्षण', 'अपकर्षण', 'संक्रमण', 'उपशम', 'निधत्ति', 'निकाचित'];
+            
+            let isCorrect = true;
+            items.forEach((item, index) => {
+                if (item.dataset.state !== correctOrder[index]) {
+                    isCorrect = false;
+                }
+            });
+            
+            if (isCorrect && items.length === 10) {
+                updateScore(300);
+                showModal('शाबाश!', 'आपने सभी अवस्थाओं को सही क्रम में रखा!');
+            } else {
+                showModal('पुनः प्रयास करें', 'क्रम सही नहीं है या कुछ अवस्थाएं छूट गई हैं।');
+            }
+        };
+
+        // Vigraha Gati Game
+        function startVigrahGatiGame() {
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="minigame-container">
+                    <h2 style="color: var(--primary); margin-bottom: 1rem;">विग्रह गति सिमुलेटर</h2>
+                    <p>आत्मा की मृत्यु के बाद की यात्रा को समझें</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin: 2rem 0;">
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid var(--primary);">
+                            <h3>ईषु गति (१ समय)</h3>
+                            <div style="font-size: 3rem; text-align: center; margin: 1rem 0;">
+                                →
+                            </div>
+                            <p>सीधी रेखा में गति, कोई मोड़ नहीं</p>
+                            <button class="action-btn" onclick="animateGati('ishu')">देखें</button>
+                        </div>
+                        
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid var(--primary);">
+                            <h3>पाणिमुक्ता गति (२ समय)</h3>
+                            <div style="font-size: 3rem; text-align: center; margin: 1rem 0;">
+                                ↗️
+                            </div>
+                            <p>एक मोड़ के साथ गति</p>
+                            <button class="action-btn" onclick="animateGati('pani')">देखें</button>
+                        </div>
+                        
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid var(--primary);">
+                            <h3>लांगलिका गति (३ समय)</h3>
+                            <div style="font-size: 3rem; text-align: center; margin: 1rem 0;">
+                                ↗️→
+                            </div>
+                            <p>दो मोड़ के साथ गति</p>
+                            <button class="action-btn" onclick="animateGati('langal')">देखें</button>
+                        </div>
+                        
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid var(--primary);">
+                            <h3>गोमूत्रिका गति (४ समय)</h3>
+                            <div style="font-size: 3rem; text-align: center; margin: 1rem 0;">
+                                〰️
+                            </div>
+                            <p>तीन मोड़ के साथ गति</p>
+                            <button class="action-btn" onclick="animateGati('gomutra')">देखें</button>
+                        </div>
+                    </div>
+                    
+                    <div id="gatiAnimation" style="height: 200px; background: var(--light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <p>एनिमेशन देखने के लिए ऊपर बटन दबाएं</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.animateGati = function(type) {
+            const animation = document.getElementById('gatiAnimation');
+            let html = '';
+            
+            switch(type) {
+                case 'ishu':
+                    html = '<div style="animation: moveRight 1s;">🔵 → → → → 🎯</div>';
+                    break;
+                case 'pani':
+                    html = '<div style="animation: moveUpRight 2s;">🔵 ↗️ → 🎯</div>';
+                    break;
+                case 'langal':
+                    html = '<div style="animation: moveLangal 3s;">🔵 ↗️ → ↘️ 🎯</div>';
+                    break;
+                case 'gomutra':
+                    html = '<div style="animation: moveWave 4s;">🔵 〰️ 〰️ 〰️ 🎯</div>';
+                    break;
+            }
+            
+            animation.innerHTML = html;
+            updateScore(25);
+        };
+
+        // Timed Challenge
+        function startTimedChallenge() {
+            let timeLeft = 60;
+            let questionsAnswered = 0;
+            let correctAnswers = 0;
+            let timerInterval;
+            
+            const questions = [
+                {q: 'घातिया कर्म कितने हैं?', a: '४'},
+                {q: 'अघातिया कर्म कितने हैं?', a: '४'},
+                {q: 'कुल कर्म कितने हैं?', a: '८'},
+                {q: 'अपकर्ष काल कितने हैं?', a: '८'},
+                {q: 'कर्म अवस्थाएं कितनी हैं?', a: '१०'},
+                {q: 'विग्रह गति कितनी हैं?', a: '४'}
+            ];
+            
+            const content = document.getElementById('lessonContent');
+            
+            function endChallenge() {
+                clearInterval(timerInterval);
+                showModal('समय चुनौती पूर्ण!', `आपने ${correctAnswers}/${questionsAnswered} सही उत्तर दिए!`);
+                updateScore(correctAnswers * 50);
+                setTimeout(() => {
+                    closeModal();
+                    startMasterChallenge();
+                }, 3000);
+            }
+            
+            function showNextQuestion() {
+                if (timeLeft <= 0 || questionsAnswered >= questions.length) {
+                    endChallenge();
+                    return;
+                }
+                
+                const q = questions[questionsAnswered];
+                content.innerHTML = `
+                    <div class="quiz-container">
+                        <h2>समय चुनौती - <span id="timer">${timeLeft}</span> सेकंड बाकी</h2>
+                        <div class="question">${q.q}</div>
+                        <input type="text" id="timedAnswer" style="padding: 0.5rem; font-size: 1.2rem; width: 200px; border: 2px solid var(--primary); border-radius: 4px;">
+                        <button class="action-btn" onclick="checkTimedAnswer('${q.a}')">उत्तर दें</button>
+                    </div>
+                `;
+                
+                // Focus on input
+                setTimeout(() => {
+                    const input = document.getElementById('timedAnswer');
+                    if (input) input.focus();
+                }, 100);
+            }
+            
+            window.checkTimedAnswer = function(correct) {
+                const answer = document.getElementById('timedAnswer').value.trim();
+                if (answer === correct) correctAnswers++;
+                questionsAnswered++;
+                showNextQuestion();
+            };
+            
+            // Start timer
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const timerEl = document.getElementById('timer');
+                if (timerEl) timerEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    endChallenge();
+                }
+            }, 1000);
+            
+            showNextQuestion();
+        }
+
+        // Scenario Analysis
+        function startScenarioAnalysis() {
+            const scenarios = [
+                {
+                    title: 'व्यापारी का मामला',
+                    description: 'एक व्यापारी ने ग्राहक को धोखा दिया और मुनाफा कमाया। बाद में उसे पछतावा हुआ और उसने दान दिया।',
+                    question: 'कौन से कर्म बंधे और कौन से कम हुए?',
+                    answer: 'धोखे से नाम कर्म (अशुभ) और गोत्र कर्म (नीच) बंधे। पश्चाताप से अपकर्षण और दान से पुण्य बंधा।'
+                },
+                {
+                    title: 'साधक की साधना',
+                    description: 'एक साधक ने १२ वर्ष तप किया लेकिन अंत में अहंकार आ गया।',
+                    question: 'किस कर्म का बंध हुआ?',
+                    answer: 'अहंकार से मोहनीय कर्म और नीच गोत्र कर्म का बंध हुआ।'
+                }
+            ];
+            
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="lesson-section">
+                    <h2 class="section-title">🔍 परिदृश्य विश्लेषण</h2>
+                    ${scenarios.map((s, i) => `
+                        <div class="case-study-card">
+                            <h3>${s.title}</h3>
+                            <p>${s.description}</p>
+                            <p><strong>प्रश्न:</strong> ${s.question}</p>
+                            <button class="action-btn" onclick="showScenarioAnswer(${i})">उत्तर देखें</button>
+                            <div id="scenario-answer-${i}" style="display: none; margin-top: 1rem; padding: 1rem; background: white; border-radius: 8px;">
+                                <strong>उत्तर:</strong> ${s.answer}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        window.showScenarioAnswer = function(index) {
+            document.getElementById(`scenario-answer-${index}`).style.display = 'block';
+            updateScore(50);
+        };
+
+        // Karma Match Challenge
+        function startKarmaMatchChallenge() {
+            const content = document.getElementById('lessonContent');
+            const matches = [
+                {karma: 'ज्ञानावरण', analogy: 'वस्त्र से ढका मुख'},
+                {karma: 'दर्शनावरण', analogy: 'द्वारपाल'},
+                {karma: 'वेदनीय', analogy: 'शहद लिपटी तलवार'},
+                {karma: 'मोहनीय', analogy: 'मदिरा'},
+                {karma: 'आयु', analogy: 'बेड़ी'},
+                {karma: 'नाम', analogy: 'चित्रकार'},
+                {karma: 'गोत्र', analogy: 'कुम्भकार'},
+                {karma: 'अंतराय', analogy: 'भण्डारी'}
+            ];
+            
+            const shuffledAnalogies = matches.map(m => m.analogy).sort(() => Math.random() - 0.5);
+            
+            content.innerHTML = `
+                <div class="minigame-container">
+                    <h2 style="color: var(--primary);">कर्म उपमा मिलान</h2>
+                    <p>प्रत्येक कर्म को उसकी सही उपमा से मिलाएं</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                        <div>
+                            <h3>कर्म</h3>
+                            ${matches.map((m, i) => `
+                                <div style="padding: 0.5rem; margin: 0.5rem 0; background: var(--light); border-radius: 4px;">
+                                    ${m.karma}
+                                    <select id="match-${i}" style="margin-left: 1rem;">
+                                        <option value="">चुनें...</option>
+                                        ${shuffledAnalogies.map(a => `<option value="${a}">${a}</option>`).join('')}
+                                    </select>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <button class="action-btn" onclick="checkMatches()">जांचें</button>
+                </div>
+            `;
+        }
+
+        window.checkMatches = function() {
+            const matches = [
+                {karma: 'ज्ञानावरण', analogy: 'वस्त्र से ढका मुख'},
+                {karma: 'दर्शनावरण', analogy: 'द्वारपाल'},
+                {karma: 'वेदनीय', analogy: 'शहद लिपटी तलवार'},
+                {karma: 'मोहनीय', analogy: 'मदिरा'},
+                {karma: 'आयु', analogy: 'बेड़ी'},
+                {karma: 'नाम', analogy: 'चित्रकार'},
+                {karma: 'गोत्र', analogy: 'कुम्भकार'},
+                {karma: 'अंतराय', analogy: 'भण्डारी'}
+            ];
+            
+            let correct = 0;
+            matches.forEach((m, i) => {
+                const selected = document.getElementById(`match-${i}`).value;
+                if (selected === m.analogy) correct++;
+            });
+            
+            if (correct === 8) {
+                updateScore(400);
+                showModal('परिपूर्ण!', 'सभी मिलान सही हैं!');
+            } else {
+                showModal('पुनः प्रयास करें', `${correct}/8 सही मिलान`);
+            }
+        };
+
+        // Karma Selection
+        function selectKarma(karmaId) {
+            const karma = karmaData.types.find(k => k.id === karmaId);
+            const cards = document.querySelectorAll('.karma-card');
+            
+            cards.forEach(card => {
+                if (card.dataset.karma === karmaId) {
+                    card.classList.toggle('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            if (karma) {
+                const causesHtml = Array.isArray(karma.causes) ? 
+                    karma.causes.map(c => `<li>${c}</li>`).join('') :
+                    Object.entries(karma.causes).map(([key, val]) => 
+                        Array.isArray(val) ? 
+                        `<li>${key}: ${val.join(', ')}</li>` :
+                        `<li>${key}: ${val}</li>`
+                    ).join('');
+
+                showModal(karma.name, `
+                    <div style="text-align: left;">
+                        <p><strong>कार्य:</strong> ${karma.function}</p>
+                        <p><strong>उपमा:</strong> ${karma.analogy}</p>
+                        <p><strong>कथन:</strong> "${karma.story}"</p>
+                        <div style="margin-top: 1rem;">
+                            <strong>कारण:</strong>
+                            <ul style="margin-top: 0.5rem;">
+                                ${causesHtml}
+                            </ul>
+                        </div>
+                    </div>
+                `);
+                
+                // Add to knowledge base
+                if (!gameState.karmaKnowledge.types.includes(karmaId)) {
+                    gameState.karmaKnowledge.types.push(karmaId);
+                    updateScore(100);
+                    updateStageProgress(1, 12.5); // 8 karmas = 100%
+                    
+                    if (gameState.karmaKnowledge.types.length === 8) {
+                        showAchievement('कर्म विद्वान', 'सभी ८ प्रकार के कर्मों की खोज की!');
+                    }
+                }
+            }
+        }
+        // Update stage progress
+        function updateStageProgress(stage, amount) {
+            gameState.stageProgress[stage] = Math.min(100, gameState.stageProgress[stage] + amount);
+            
+            // Update progress bar immediately on main menu
+            const progressBar = document.getElementById(`progress${stage}`);
+            if (progressBar) {
+                progressBar.style.width = `${gameState.stageProgress[stage]}%`;
+            }
+            
+            saveProgress();
+            checkMasterUnlock();
+            
+            // Show achievement when stage is completed
+            if (gameState.stageProgress[stage] >= 100 && !gameState.completedLessons.includes(`stage${stage}`)) {
+                gameState.completedLessons.push(`stage${stage}`);
+                showAchievement(`चरण ${stage} पूर्ण!`, `आपने चरण ${stage} सफलतापूर्वक पूरा किया!`);
+            }
+        }
+
+        // Show Quiz Helper
+        function showQuiz(questions, title, isMaster = false) {
+            let currentQuestion = 0;
+            let score = 0;
+            
+            function showQuestion() {
+                if (currentQuestion >= questions.length) {
+                    const percentage = (score / questions.length) * 100;
+                    showModal(`${title} पूर्ण!`, `आपका स्कोर: ${score}/${questions.length} (${percentage.toFixed(0)}%)`);
+                    updateScore(score * (isMaster ? 150 : 100));
+                    
+                    if (!isMaster && gameState.currentStage) {
+                        updateStageProgress(gameState.currentStage, percentage / 4);
+                    } else if (isMaster) {
+                        updateStageProgress(4, percentage);
+                    }
+                    
+                    setTimeout(() => {
+                        closeModal();
+                        if (!isMaster && gameState.currentStage) {
+                            window[`loadStage${gameState.currentStage}`]();
+                        } else {
+                            startMasterChallenge();
+                        }
+                    }, 3000);
+                    
+                    return;
+                }
+                
+                const q = questions[currentQuestion];
+                const content = document.getElementById('lessonContent');
+                content.innerHTML = `
+                    <div class="quiz-container">
+                        <h2 style="color: var(--primary);">${title}</h2>
+                        <div style="margin-bottom: 1rem;">प्रश्न ${currentQuestion + 1}/${questions.length}</div>
+                        <div class="question">${q.question}</div>
+                        <div class="options">
+                            ${q.options.map((opt, i) => `
+                                <div class="option" onclick="handleQuizAnswer(${i}, ${q.correct})" style="cursor: pointer;">
+                                    ${opt}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            window.handleQuizAnswer = function(selected, correct) {
+                const options = document.querySelectorAll('.option');
+                options[selected].classList.add(selected === correct ? 'correct' : 'incorrect');
+                if (selected !== correct) {
+                    options[correct].classList.add('correct');
+                } else {
+                    score++;
+                }
+                
+                // Disable all options
+                options.forEach(opt => opt.style.pointerEvents = 'none');
+                
+                setTimeout(() => {
+                    currentQuestion++;
+                    showQuestion();
+                }, 1500);
+            };
+            
+            showQuestion();
+        }
+
+        // Other existing functions remain the same...
+        function startKarmaCatcher() {
+            const content = document.getElementById('lessonContent');
+            let score = 0;
+            let lives = 3;
+            let gameActive = true;
+            
+            const scenarios = [
+                { text: 'ईर्ष्या से शिक्षक का नाम छिपाना', karma: 'jnanavarana' },
+                { text: 'आलस्य से दिन में सोना', karma: 'darshanavarana' },
+                { text: 'पीड़ित जानवरों पर दया', karma: 'vedaniya' },
+                { text: 'व्रत लेने से रोकना', karma: 'mohaniya' },
+                { text: 'अत्यधिक लगाव', karma: 'ayu' },
+                { text: 'कुटिल कार्य', karma: 'nama' },
+                { text: 'आत्म प्रशंसा', karma: 'gotra' },
+                { text: 'दान में बाधा', karma: 'antaraya' }
+            ];
+            
+            const karmaTypes = [
+                {id: 'jnanavarana', name: 'ज्ञानावरण', color: '#6B46C1'},
+                {id: 'darshanavarana', name: 'दर्शनावरण', color: '#9333EA'},
+                {id: 'vedaniya', name: 'वेदनीय', color: '#F59E0B'},
+                {id: 'mohaniya', name: 'मोहनीय', color: '#EF4444'}
+            ];
+            
+            content.innerHTML = `
+                <div class="minigame-container">
+                    <h2 style="color: var(--primary);">कर्म पकड़ने का खेल</h2>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <div>स्कोर: <span id="catcherScore">0</span></div>
+                        <div>जीवन: <span id="catcherLives">❤️❤️❤️</span></div>
+                    </div>
+                    
+                    <div style="position: relative; height: 400px; background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%); border-radius: 8px; overflow: hidden;" id="gameArea">
+                        <!-- Falling scenarios will appear here -->
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 1rem;">
+                        ${karmaTypes.map(k => `
+                            <div class="karma-basket" 
+                                data-karma="${k.id}"
+                                style="background: ${k.color}; color: white; padding: 1rem; border-radius: 8px; text-align: center; cursor: pointer; user-select: none;">
+                                ${k.name}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            let activeScenario = null;
+            let selectedBasket = null;
+            
+            // Basket selection
+            document.querySelectorAll('.karma-basket').forEach(basket => {
+                basket.addEventListener('click', function() {
+                    if (!gameActive) return;
+                    document.querySelectorAll('.karma-basket').forEach(b => b.style.border = 'none');
+                    this.style.border = '3px solid white';
+                    selectedBasket = this.dataset.karma;
+                });
+            });
+            
+            function dropScenario() {
+                if (!gameActive) return;
+                
+                const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+                const gameArea = document.getElementById('gameArea');
+                
+                const drop = document.createElement('div');
+                drop.style.cssText = `
+                    position: absolute;
+                    left: ${Math.random() * 70 + 15}%;
+                    top: -50px;
+                    background: white;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                    transition: top 4s linear;
+                    max-width: 200px;
+                    font-size: 0.9rem;
+                `;
+                drop.textContent = scenario.text;
+                drop.dataset.karma = scenario.karma;
+                
+                gameArea.appendChild(drop);
+                
+                // Start falling
+                setTimeout(() => {
+                    drop.style.top = '380px';
+                }, 100);
+                
+                // Check if caught or missed
+                setTimeout(() => {
+                    if (drop.parentElement) {
+                        // Missed
+                        lives--;
+                        updateLives();
+                        drop.remove();
+                        if (lives <= 0) {
+                            endGame();
+                        }
+                    }
+                }, 4100);
+                
+                // Click to catch
+                drop.addEventListener('click', function() {
+                    if (!gameActive) return;
+                    if (selectedBasket === this.dataset.karma) {
+                        score += 10;
+                        document.getElementById('catcherScore').textContent = score;
+                        this.style.background = '#10B981';
+                        this.textContent = '✓';
+                    } else {
+                        lives--;
+                        updateLives();
+                        this.style.background = '#EF4444';
+                        this.textContent = '✗';
+                    }
+                    setTimeout(() => this.remove(), 500);
+                });
+            }
+            
+            function updateLives() {
+                const hearts = '❤️'.repeat(Math.max(0, lives));
+                document.getElementById('catcherLives').textContent = hearts || '💔';
+            }
+            
+            function endGame() {
+                gameActive = false;
+                showModal('खेल समाप्त!', `आपका स्कोर: ${score}`);
+                updateScore(score * 5);
+                updateStageProgress(1, 25);
+            }
+            
+            // Start dropping scenarios
+            const dropInterval = setInterval(() => {
+                if (!gameActive) {
+                    clearInterval(dropInterval);
+                    return;
+                }
+                dropScenario();
+            }, 2000);
+            
+            // Drop first scenario immediately
+            dropScenario();
+        }
+
+        function showKarmaQuiz() {
+            const questions = [
+                {
+                    question: 'किस कर्म की तुलना मदिरा से की गई है?',
+                    options: ['ज्ञानावरण', 'मोहनीय', 'वेदनीय', 'अंतराय'],
+                    correct: 1
+                },
+                {
+                    question: 'कितने कर्म घातिया (विनाशकारी) के रूप में वर्गीकृत हैं?',
+                    options: ['२', '४', '६', '८'],
+                    correct: 1
+                },
+                {
+                    question: 'किस कर्म ने आदिनाथ भगवान को महीनों तक भोजन से वंचित रखा?',
+                    options: ['आयु', 'नाम', 'अंतराय', 'वेदनीय'],
+                    correct: 2
+                },
+                {
+                    question: 'दिन में सोने से कौन सा कर्म बंधता है?',
+                    options: ['ज्ञानावरण', 'दर्शनावरण', 'मोहनीय', 'अंतराय'],
+                    correct: 1
+                }
+            ];
+            
+            showQuiz(questions, 'कर्म ज्ञान प्रश्नोत्तरी');
+        }
+
+        function showKarmaStories() {
+            const stories = [
+                {
+                    title: 'बाहुबली की खड़ी ध्यान साधना',
+                    karma: 'ज्ञानावरण',
+                    story: 'शक्तिशाली बाहुबली एक पूर्ण वर्ष तक ध्यान में खड़े रहे। उनकी तीव्र साधना के बावजूद, ज्ञानावरण कर्म ने उन्हें सर्वज्ञता प्राप्त करने से रोका जब तक उन्होंने अपने सूक्ष्म अभिमान पर विजय नहीं पाई।'
+                },
+                {
+                    title: 'राजा श्रेणिक का परिवर्तन',
+                    karma: 'आयु',
+                    story: 'राजा श्रेणिक ने शुरू में ३३ सागर की नारकीय आयु बांधी थी। लेकिन सम्यक्त्व प्राप्त करके उन्होंने अपकर्षण के माध्यम से इसे केवल ८४,००० वर्ष तक कम कर लिया।'
+                },
+                {
+                    title: 'भगवान राम का मोह',
+                    karma: 'मोहनीय',
+                    story: 'महान भगवान राम भी मोहनीय कर्म से प्रभावित हुए, अपने भाई लक्ष्मण के मृत शरीर को ६ महीने तक ले जाते रहे और वनों में सीता की अंतहीन खोज करते रहे।'
+                }
+            ];
+            
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="lesson-section">
+                    <h2 class="section-title">📚 शास्त्रों से कर्म कथाएं</h2>
+                    ${stories.map(story => `
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--primary);">
+                            <h3 style="color: var(--primary); margin-bottom: 0.5rem;">${story.title}</h3>
+                            <p style="color: var(--accent); margin-bottom: 1rem;">कर्म प्रकार: ${story.karma}</p>
+                            <p style="line-height: 1.8;">${story.story}</p>
+                        </div>
+                    `).join('')}
+                    <button class="action-btn" onclick="loadStage1()">पाठ पर वापस</button>
+                </div>
+            `;
+        }
+
+        function startKarmaSimulator() {
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="minigame-container">
+                    <h2 style="color: var(--primary); margin-bottom: 1rem;">कर्म प्रवाह सिमुलेटर</h2>
+                    <p style="margin-bottom: 2rem;">
+                        आपके कर्म कण जुड़े हैं। उन्हें रूपांतरित करने के लिए क्रिया कार्डों का उपयोग करें!
+                    </p>
+                    
+                    <div style="display: flex; justify-content: center; margin: 2rem 0;">
+                        <div style="position: relative;">
+                            <div class="soul-avatar" style="width: 150px; height: 150px;">
+                                <div id="karmaParticles" style="position: absolute; width: 100%; height: 100%;">
+                                    <!-- Karma particles will be added here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button class="action-btn" onclick="applyKarmaAction('apakarsana')">
+                            सच्चा पश्चाताप<br><small>(अपकर्षण)</small>
+                        </button>
+                        <button class="action-btn" onclick="applyKarmaAction('utkarsana')">
+                            तीव्र क्रोध<br><small>(उत्कर्षण)</small>
+                        </button>
+                        <button class="action-btn" onclick="applyKarmaAction('sankramana')">
+                            सम्यक्त्व<br><small>(संक्रमण)</small>
+                        </button>
+                        <button class="action-btn" onclick="applyKarmaAction('upasama')">
+                            गहन ध्यान<br><small>(उपशम)</small>
+                        </button>
+                        <button class="action-btn" onclick="applyKarmaAction('udirana')">
+                            विशेष प्रयास<br><small>(उदीरणा)</small>
+                        </button>
+                        <button class="action-btn" onclick="applyKarmaAction('jina-darshan')">
+                            जिन दर्शन<br><small>(ताले तोड़ें)</small>
+                        </button>
+                    </div>
+                    
+                    <div id="simulatorStatus" style="margin-top: 2rem; padding: 1rem; background: white; border-radius: 8px;">
+                        स्थिति: कर्म कण सक्रिय
+                    </div>
+                </div>
+            `;
+            
+            // Initialize karma particles
+            initializeKarmaParticles();
+        }
+
+        function initializeKarmaParticles() {
+            const container = document.getElementById('karmaParticles');
+            const particles = [
+                { type: 'jnanavarana', color: '#6B46C1', size: 30, locked: false },
+                { type: 'mohaniya', color: '#EF4444', size: 40, locked: false },
+                { type: 'vedaniya', color: '#F59E0B', size: 25, locked: false },
+                { type: 'antaraya', color: '#DC2626', size: 20, locked: true }
+            ];
+            
+            container.innerHTML = particles.map((p, i) => `
+                <div class="karma-particle" 
+                     data-type="${p.type}" 
+                     data-locked="${p.locked}"
+                     style="
+                        position: absolute;
+                        width: ${p.size}px;
+                        height: ${p.size}px;
+                        background: ${p.color};
+                        border-radius: 50%;
+                        opacity: 0.7;
+                        top: ${20 + i * 25}%;
+                        left: ${20 + i * 20}%;
+                        transition: all 0.5s;
+                        ${p.locked ? 'border: 3px solid #000;' : ''}
+                     ">
+                    ${p.locked ? '🔒' : ''}
+                </div>
+            `).join('');
+        }
+
+        function applyKarmaAction(action) {
+            const particles = document.querySelectorAll('.karma-particle');
+            const status = document.getElementById('simulatorStatus');
+            
+            switch(action) {
+                case 'apakarsana':
+                    particles.forEach(p => {
+                        if (p.dataset.locked !== 'true') {
+                            const currentSize = parseInt(p.style.width);
+                            p.style.width = p.style.height = `${currentSize * 0.8}px`;
+                        }
+                    });
+                    status.textContent = 'स्थिति: पश्चाताप से कर्म की तीव्रता कम हुई';
+                    break;
+                    
+                case 'utkarsana':
+                    particles.forEach(p => {
+                        if (p.dataset.type === 'mohaniya' && p.dataset.locked !== 'true') {
+                            const currentSize = parseInt(p.style.width);
+                            p.style.width = p.style.height = `${currentSize * 1.3}px`;
+                            p.style.background = '#8B0000';
+                        }
+                    });
+                    status.textContent = 'स्थिति: क्रोध ने मोहनीय कर्म को तीव्र किया!';
+                    break;
+                    
+                case 'sankramana':
+                    particles.forEach(p => {
+                        if (p.dataset.type === 'vedaniya' && p.dataset.locked !== 'true') {
+                            p.style.background = '#10B981';
+                        }
+                    });
+                    status.textContent = 'स्थिति: असाता कर्म को साता कर्म में रूपांतरित किया';
+                    break;
+                    
+                case 'upasama':
+                    particles.forEach(p => {
+                        if (p.dataset.locked !== 'true') {
+                            p.style.opacity = '0.2';
+                        }
+                    });
+                    status.textContent = 'स्थिति: ध्यान से कर्म अस्थायी रूप से दबाया गया';
+                    setTimeout(() => {
+                        particles.forEach(p => p.style.opacity = '0.7');
+                    }, 3000);
+                    break;
+                    
+                case 'udirana':
+                    particles[0].style.animation = 'pulse 0.5s';
+                    setTimeout(() => {
+                        particles[0].style.display = 'none';
+                        status.textContent = 'स्थिति: कर्म को जल्दी फल देकर समाप्त किया';
+                    }, 500);
+                    break;
+                    
+                case 'jina-darshan':
+                    particles.forEach(p => {
+                        if (p.dataset.locked === 'true') {
+                            p.dataset.locked = 'false';
+                            p.innerHTML = '';
+                            p.style.border = 'none';
+                        }
+                    });
+                    status.textContent = 'स्थिति: पवित्र दर्शन ने निश्चित कर्मों को खोला!';
+                    showAchievement('ताला तोड़ने वाला', 'आपने निधत्ति कर्म को खोला!');
+                    break;
+            }
+            
+            updateScore(50);
+            updateStageProgress(2, 5);
+        }
+
+        function startLifespanCalculator() {
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="minigame-container">
+                    <h2 style="color: var(--primary);">आयु कर्म गणक</h2>
+                    <p>कुल जीवनकाल के आधार पर गणना करें कि आयु कर्म कब बंध सकता है</p>
+                    
+                    <div style="margin: 2rem 0;">
+                        <label style="display: block; margin-bottom: 0.5rem;">कुल जीवनकाल (वर्ष) दर्ज करें:</label>
+                        <input type="number" id="lifespanInput" value="729" style="padding: 0.5rem; font-size: 1.1rem; border: 2px solid var(--primary); border-radius: 4px;">
+                        <button class="action-btn" onclick="calculateApakarsa()" style="margin-left: 1rem;">गणना करें</button>
+                    </div>
+                    
+                    <div id="apakarsaResults" style="background: white; padding: 1.5rem; border-radius: 8px; margin-top: 2rem;">
+                        <!-- Results will appear here -->
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateApakarsa() {
+            const lifespan = parseInt(document.getElementById('lifespanInput').value);
+            const results = document.getElementById('apakarsaResults');
+            
+            const periods = [];
+            let remaining = lifespan;
+            
+            for (let i = 1; i <= 8; i++) {
+                const bindPoint = remaining * (2/3);
+                periods.push({
+                    period: i,
+                    atAge: lifespan - remaining + bindPoint,
+                    remaining: remaining - bindPoint
+                });
+                remaining = remaining / 3;
+            }
+            
+            results.innerHTML = `
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">${lifespan} वर्षों के लिए ८ अपकर्ष काल</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: var(--light);">
+                            <th style="padding: 0.5rem; text-align: left;">काल</th>
+                            <th style="padding: 0.5rem; text-align: left;">बंधन आयु</th>
+                            <th style="padding: 0.5rem; text-align: left;">शेष वर्ष</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${periods.map(p => `
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 0.5rem;">${p.period}</td>
+                                <td style="padding: 0.5rem;">${p.atAge.toFixed(2)} वर्ष</td>
+                                <td style="padding: 0.5rem;">${p.remaining.toFixed(2)} वर्ष</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <p style="margin-top: 1rem; font-style: italic;">
+                    यदि किसी भी काल में बंधन नहीं होता है, तो यह स्वचालित रूप से तब होता है 
+                    जब जीवनकाल का केवल एक अतिसूक्ष्म अंश शेष रहता है।
+                </p>
+            `;
+            
+            updateScore(50);
+            updateStageProgress(3, 10);
+        }
+
+        function showDeathTransition() {
+            const content = document.getElementById('lessonContent');
+            content.innerHTML = `
+                <div class="lesson-section">
+                    <h2 class="section-title">🌟 मृत्यु के बाद आत्मा की यात्रा</h2>
+                    
+                    <div style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
+                        <h3 style="color: var(--primary);">संक्रमण समय</h3>
+                        <p>अधिकतम ३ समय (समय)। चौथे में, नया शरीर निर्माण शुरू होता है।</p>
+                    </div>
+                    
+                    <div style="margin: 2rem 0;">
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">४ प्रकार की गति (विग्रह गति)</h3>
+                        
+                        <div style="display: grid; gap: 1rem;">
+                            <div style="background: white; padding: 1rem; border-radius: 8px; display: flex; align-items: center; gap: 1rem;">
+                                <div style="font-size: 2rem;">➡️</div>
+                                <div>
+                                    <strong>ईषु गति</strong> - तीर की तरह (१ समय)<br>
+                                    <small>सीधा मार्ग, कोई मोड़ नहीं</small>
+                                </div>
+                            </div>
+                            
+                            <div style="background: white; padding: 1rem; border-radius: 8px; display: flex; align-items: center; gap: 1rem;">
+                                <div style="font-size: 2rem;">↗️</div>
+                                <div>
+                                    <strong>पाणिमुक्ता गति</strong> - फेंकी वस्तु की तरह (२ समय)<br>
+                                    <small>मार्ग में एक मोड़</small>
+                                </div>
+                            </div>
+                            
+                            <div style="background: white; padding: 1rem; border-radius: 8px; display: flex; align-items: center; gap: 1rem;">
+                                <div style="font-size: 2rem;">↗️➡️</div>
+                                <div>
+                                    <strong>लांगलिका गति</strong> - हल की तरह (३ समय)<br>
+                                    <small>मार्ग में दो मोड़</small>
+                                </div>
+                            </div>
+                            
+                            <div style="background: white; padding: 1rem; border-radius: 8px; display: flex; align-items: center; gap: 1rem;">
+                                <div style="font-size: 2rem;">〰️</div>
+                                <div>
+                                    <strong>गोमूत्रिका गति</strong> - गाय के मूत्र धारा की तरह (४ समय)<br>
+                                    <small>मार्ग में तीन मोड़</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="action-btn" onclick="loadStage3()">आयु पाठ पर वापस</button>
+                </div>
+            `;
+        }
+
+        function ayuQuiz() {
+            const questions = [
+                {
+                    question: 'कितने अपकर्ष कालों में आयु कर्म बंध सकता है?',
+                    options: ['४', '६', '८', '१०'],
+                    correct: 2
+                },
+                {
+                    question: 'किन जीवों का अकाल मरण नहीं हो सकता?',
+                    options: ['केवल मनुष्य', 'केवल जानवर', 'देव और नारकी जीव', 'सभी जीव'],
+                    correct: 2
+                },
+                {
+                    question: 'मृत्यु के बाद आत्मा संक्रमण के लिए अधिकतम समय?',
+                    options: ['१ समय', '३ समय', '४ समय', '७ समय'],
+                    correct: 1
+                },
+                {
+                    question: 'कौन सी गति ४ समय लेती है?',
+                    options: ['ईषु गति', 'पाणिमुक्ता गति', 'लांगलिका गति', 'गोमूत्रिका गति'],
+                    correct: 3
+                }
+            ];
+            
+            showQuiz(questions, 'आयु कर्म चुनौती');
+        }
+
+        // Utility Functions
+        function showModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalText').innerHTML = content;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function backToMenu() {
+            document.getElementById('gameContainer').classList.remove('active');
+            document.getElementById('mainMenu').classList.add('active');
+            
+            // Update all progress bars when returning to menu
+            Object.keys(gameState.stageProgress).forEach(stage => {
+                const progressBar = document.getElementById(`progress${stage}`);
+                if (progressBar) {
+                    progressBar.style.width = `${gameState.stageProgress[stage]}%`;
+                }
+            });
+            
+            // Check and update master unlock status
+            checkMasterUnlock();
+            saveProgress();
+        }
+
+        function updateScore(points) {
+            gameState.score += points;
+            document.getElementById('scoreValue').textContent = gameState.score;
+            
+            // Level up every 1000 points
+            const newLevel = Math.floor(gameState.score / 1000) + 1;
+            if (newLevel > gameState.level) {
+                gameState.level = newLevel;
+                document.getElementById('levelValue').textContent = gameState.level;
+                showAchievement('स्तर वृद्धि!', `आपने स्तर ${gameState.level} प्राप्त किया`);
+            }
+            
+            saveProgress();
+        }
+
+        function showAchievement(title, desc) {
+            const popup = document.getElementById('achievementPopup');
+            document.getElementById('achievementTitle').textContent = title;
+            document.getElementById('achievementDesc').textContent = desc;
+            
+            popup.classList.add('show');
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3000);
+            
+            if (!gameState.unlockedAchievements.includes(title)) {
+                gameState.unlockedAchievements.push(title);
+                updateScore(200);
+            }
+        }
+
+        function saveProgress() {
+            localStorage.setItem('karmaGameState', JSON.stringify(gameState));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('karmaGameState');
+            if (saved) {
+                gameState = JSON.parse(saved);
+                document.getElementById('scoreValue').textContent = gameState.score;
+                document.getElementById('levelValue').textContent = gameState.level;
+                
+                // Update progress bars
+                Object.keys(gameState.stageProgress).forEach(stage => {
+                    const progressBar = document.getElementById(`progress${stage}`);
+                    if (progressBar) {
+                        progressBar.style.width = `${gameState.stageProgress[stage]}%`;
+                    }
+                });
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes moveRight {
+            from { transform: translateX(0); }
+            to { transform: translateX(100px); }
+        }
+        
+        @keyframes moveUpRight {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(50px, -50px); }
+            100% { transform: translate(100px, -50px); }
+        }
+        
+        @keyframes moveLangal {
+            0% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -30px); }
+            66% { transform: translate(60px, -30px); }
+            100% { transform: translate(90px, 0); }
+        }
+        
+        @keyframes moveWave {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(25px, -20px); }
+            50% { transform: translate(50px, 0); }
+            75% { transform: translate(75px, -20px); }
+            100% { transform: translate(100px, 0); }
+        }
+    </style>
+</body>
+</html>
