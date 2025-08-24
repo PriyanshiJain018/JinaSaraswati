@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - जिनसरस्वती</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #8B4513 0%, #DEB887 100%);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .soul-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 70%);
+            margin: 0 auto 2rem;
+            animation: pulse 3s infinite ease-in-out;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.6);
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 60px rgba(255, 215, 0, 0.6);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 80px rgba(255, 215, 0, 0.9);
+            }
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-box h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #FFD700;
+        }
+        
+        .info-box ul {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .info-box li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-box li::before {
+            content: '✓';
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .retry-btn {
+            background: white;
+            color: #8B4513;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .retry-btn:active {
+            transform: translateY(0);
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            .soul-icon {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="soul-icon"></div>
+        
+        <h1>ऑफलाइन मोड</h1>
+        <p>आप वर्तमान में ऑफलाइन हैं</p>
+        <p style="font-size: 0.95rem; opacity: 0.9;">You are currently offline</p>
+        
+        <div class="info-box">
+            <h2>उपलब्ध सुविधाएं</h2>
+            <ul>
+                <li>पहले से डाउनलोड किए गए अध्याय</li>
+                <li>आपकी प्रगति सुरक्षित है</li>
+                <li>ऑफलाइन मेडिटेशन उपलब्ध</li>
+                <li>उपलब्धियां देखें</li>
+            </ul>
+        </div>
+        
+        <button class="retry-btn" onclick="window.location.reload()">
+            पुनः प्रयास करें / Retry
+        </button>
+    </div>
+    
+    <script>
+        // Check connection periodically
+        setInterval(() => {
+            if (navigator.onLine) {
+                window.location.reload();
+            }
+        }, 5000);
+        
+        // Add click animation to soul icon
+        document.querySelector('.soul-icon').addEventListener('click', function() {
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = 'pulse 3s infinite ease-in-out';
+            }, 10);
+        });
+    </script>
+</body>
+</html>
