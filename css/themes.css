@@ -1,0 +1,248 @@
+/* css/themes.css */
+/* Leśyā-based Theme System */
+
+/* Krishna Leśyā (Black) - Darkest */
+.theme-krishna {
+  --primary: #1a1a1a;
+  --secondary: #2d2d2d;
+  --accent: #404040;
+  --text: #e0e0e0;
+  --bg: #0a0a0a;
+  --soul-glow: rgba(50, 50, 50, 0.5);
+  --karma-density: 100%;
+}
+
+/* Nila Leśyā (Blue) - Very Dark */
+.theme-nila {
+  --primary: #00008B;
+  --secondary: #4169E1;
+  --accent: #6495ED;
+  --text: #E6E6FA;
+  --bg: #191970;
+  --soul-glow: rgba(65, 105, 225, 0.5);
+  --karma-density: 80%;
+}
+
+/* Kapota Leśyā (Grey) - Dark */
+.theme-kapota {
+  --primary: #708090;
+  --secondary: #A9A9A9;
+  --accent: #C0C0C0;
+  --text: #2F4F4F;
+  --bg: #DCDCDC;
+  --soul-glow: rgba(112, 128, 144, 0.5);
+  --karma-density: 60%;
+}
+
+/* Tejas Leśyā (Red) - Medium */
+.theme-tejas {
+  --primary: #DC143C;
+  --secondary: #FF6347;
+  --accent: #FF69B4;
+  --text: #8B0000;
+  --bg: #FFE4E1;
+  --soul-glow: rgba(220, 20, 60, 0.5);
+  --karma-density: 40%;
+}
+
+/* Padma Leśyā (Yellow) - Light */
+.theme-padma {
+  --primary: #FFD700;
+  --secondary: #FFA500;
+  --accent: #FF8C00;
+  --text: #8B4513;
+  --bg: #FFF8DC;
+  --soul-glow: rgba(255, 215, 0, 0.6);
+  --karma-density: 20%;
+}
+
+/* Shukla Leśyā (White) - Purest */
+.theme-shukla {
+  --primary: #FFFFFF;
+  --secondary: #F0F8FF;
+  --accent: #E6E6FA;
+  --text: #4A4A4A;
+  --bg: #FAFAFA;
+  --soul-glow: rgba(255, 255, 255, 0.8);
+  --karma-density: 5%;
+}
+
+/* Universe-specific Themes */
+.universe-1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.universe-2 {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.universe-3 {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+.universe-4 {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #e0e0e0;
+    --bg: #1a1a1a;
+    --card-bg: #2d2d2d;
+    --border: rgba(255, 255, 255, 0.1);
+  }
+  
+  .app-container {
+    background: var(--bg);
+    color: var(--text);
+  }
+}
+
+/* Soul Avatar Themes by Leśyā */
+.soul-avatar.lesya-krishna {
+  background: radial-gradient(circle at 30% 30%, #333, #000);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.9),
+              inset 0 0 20px rgba(50, 50, 50, 0.5);
+}
+
+.soul-avatar.lesya-nila {
+  background: radial-gradient(circle at 30% 30%, #4169E1, #00008B);
+  box-shadow: 0 0 40px rgba(0, 0, 139, 0.8),
+              inset 0 0 20px rgba(65, 105, 225, 0.5);
+}
+
+.soul-avatar.lesya-kapota {
+  background: radial-gradient(circle at 30% 30%, #A9A9A9, #708090);
+  box-shadow: 0 0 40px rgba(112, 128, 144, 0.7),
+              inset 0 0 20px rgba(169, 169, 169, 0.5);
+}
+
+.soul-avatar.lesya-tejas {
+  background: radial-gradient(circle at 30% 30%, #FF6347, #DC143C);
+  box-shadow: 0 0 40px rgba(220, 20, 60, 0.8),
+              inset 0 0 20px rgba(255, 99, 71, 0.5);
+}
+
+.soul-avatar.lesya-padma {
+  background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.8),
+              inset 0 0 20px rgba(255, 165, 0, 0.5);
+}
+
+.soul-avatar.lesya-shukla {
+  background: radial-gradient(circle at 30% 30%, #FFFFFF, #F0F8FF);
+  box-shadow: 0 0 60px rgba(255, 255, 255, 0.9),
+              inset 0 0 30px rgba(240, 248, 255, 0.7);
+}
+
+/* Achievement Badge Colors */
+.badge-bronze {
+  background: linear-gradient(135deg, #CD7F32, #8B4513);
+  color: white;
+}
+
+.badge-silver {
+  background: linear-gradient(135deg, #C0C0C0, #808080);
+  color: white;
+}
+
+.badge-gold {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #8B4513;
+}
+
+.badge-platinum {
+  background: linear-gradient(135deg, #E5E4E2, #BCC6CC);
+  color: #333;
+}
+
+/* Status Colors */
+.status-success {
+  background: #4CAF50;
+  color: white;
+}
+
+.status-warning {
+  background: #FF9800;
+  color: white;
+}
+
+.status-error {
+  background: #F44336;
+  color: white;
+}
+
+.status-info {
+  background: #2196F3;
+  color: white;
+}
+
+/* Karma Type Colors */
+.karma-gyanavaraniya {
+  background: #6B46C1;
+}
+
+.karma-darshanavaraniya {
+  background: #9333EA;
+}
+
+.karma-vedaniya {
+  background: #F59E0B;
+}
+
+.karma-mohaniya {
+  background: #EF4444;
+}
+
+.karma-ayu {
+  background: #3B82F6;
+}
+
+.karma-nama {
+  background: #8B5CF6;
+}
+
+.karma-gotra {
+  background: #059669;
+}
+
+.karma-antaraya {
+  background: #DC2626;
+}
+
+/* Gradient Overlays */
+.gradient-overlay-gold {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.1),
+    rgba(255, 165, 0, 0.1)
+  );
+}
+
+.gradient-overlay-spiritual {
+  background: linear-gradient(
+    135deg,
+    rgba(138, 43, 226, 0.1),
+    rgba(30, 144, 255, 0.1)
+  );
+}
+
+/* Glass Morphism Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
