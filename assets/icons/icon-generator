@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="canvas" width="192" height="192"></canvas>
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Create gradient background
+  const gradient = ctx.createRadialGradient(96, 96, 0, 96, 96, 96);
+  gradient.addColorStop(0, '#FFD700');
+  gradient.addColorStop(1, '#FFA500');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 192, 192);
+  
+  // Add text
+  ctx.fillStyle = '#8B4513';
+  ctx.font = 'bold 100px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('ॐ', 96, 96);
+  
+  // Download as PNG
+  canvas.toBlob(blob => {
+    const a = document.createElement('a');
+    a.download = 'icon-192.png';
+    a.href = URL.createObjectURL(blob);
+    a.click();
+  });
+</script>
+</body>
+</html>
