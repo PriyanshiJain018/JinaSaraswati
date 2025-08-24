@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8B4513">
+    <title>जिनसरस्वती - Jainism Learning Journey</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Stylesheets -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/themes.css">
+    
+    <!-- Splash Screen Style -->
+    <style>
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #8B4513 0%, #DEB887 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .soul-loader {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash" class="splash-screen">
+        <div class="soul-loader"></div>
+        <h1 style="color: white; margin-top: 30px; font-family: 'Noto Sans Devanagari';">
+            जिनसरस्वती
+        </h1>
+        <p style="color: rgba(255,255,255,0.8);">आत्मा की यात्रा...</p>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container" style="display: none;">
+        <!-- Dynamic Navigation -->
+        <nav id="main-nav" class="bottom-nav"></nav>
+        
+        <!-- Content Router View -->
+        <main id="router-view" class="content-area">
+            <!-- Home Screen -->
+            <div class="home-screen">
+                <div class="welcome-header">
+                    <div class="soul-avatar" id="user-soul"></div>
+                    <h2>नमस्कार साधक! 🙏</h2>
+                    <div class="xp-bar">
+                        <div class="xp-progress" data-xp="0"></div>
+                        <span class="level-badge">Level 1</span>
+                    </div>
+                </div>
+                
+                <!-- Universe Grid -->
+                <div class="universe-grid">
+                    <div class="universe-card dravyanuyog unlocked" data-universe="4">
+                        <div class="universe-icon">🔮</div>
+                        <h3>द्रव्यानुयोग</h3>
+                        <p>Universe of Reality</p>
+                        <div class="progress-ring" data-progress="10"></div>
+                    </div>
+                    <!-- Other universes (locked initially) -->
+                    <div class="universe-card locked">
+                        <div class="lock-overlay">🔒</div>
+                    </div>
+                </div>
+                
+                <!-- Daily Prashna Widget -->
+                <div class="daily-prashna-card">
+                    <h3>📜 आज का प्रश्न</h3>
+                    <div id="daily-question"></div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Achievement Popup -->
+        <div id="achievement-popup" class="achievement-popup hidden"></div>
+        
+        <!-- Karma Particles Canvas -->
+        <canvas id="karma-particles" class="karma-canvas"></canvas>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/sw-register.js"></script>
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>
