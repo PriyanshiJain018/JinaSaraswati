@@ -2,7 +2,7 @@
   "name": "जिनसरस्वती - Jainism Learning Journey",
   "short_name": "जिनसरस्वती",
   "description": "Interactive Jainism learning through gamified experiences",
-  "start_url": "/",
+  "start_url": "/JinaSaraswati/",
   "display": "standalone",
   "background_color": "#8B4513",
   "theme_color": "#8B4513",
@@ -10,7 +10,7 @@
   "categories": ["education", "lifestyle"],
   "lang": "hi",
   "dir": "ltr",
-  "scope": "/",
+  "scope": "/JinaSaraswati/",
   "icons": [
     {
       "src": "assets/icons/icon-72.png",
