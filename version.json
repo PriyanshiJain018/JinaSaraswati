@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-08-24",
+  "cacheList": [
+    "/",
+    "/index.html",
+    "/offline.html",
+    "/css/main.css",
+    "/css/animations.css",
+    "/css/themes.css",
+    "/css/responsive.css",
+    "/js/app.js",
+    "/js/router.js",
+    "/js/storage.js",
+    "/js/achievements.js",
+    "/js/karma-visualizer.js",
+    "/js/soul-avatar.js",
+    "/js/universe-navigator.js",
+    "/js/sw-register.js",
+    "/data/daily-prashnas.json",
+    "/data/achievements.json",
+    "/universes/dravyanuyog/config.json",
+    "/universes/dravyanuyog/chapters/chapter-40.html",
+    "/universes/dravyanuyog/chapters/chapter-44.html"
+  ]
+}
