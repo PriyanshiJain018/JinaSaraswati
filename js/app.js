@@ -1,4 +1,4 @@
-// Main App Controller
+// Main App Controller - Fixed with correct paths
 import { Router } from './router.js';
 import { Storage } from './storage.js';
 import { Achievements } from './achievements.js';
@@ -75,12 +75,12 @@ class JinasaraswatiApp {
   }
   
   setupRouting() {
-    // Define routes
-    this.router.addRoute('/', this.renderHome.bind(this));
-    this.router.addRoute('/universe/:id', this.renderUniverse.bind(this));
-    this.router.addRoute('/chapter/:universe/:chapter', this.renderChapter.bind(this));
-    this.router.addRoute('/quiz/:id', this.renderQuiz.bind(this));
-    this.router.addRoute('/achievements', this.renderAchievements.bind(this));
+    // Define routes with correct base path
+    this.router.addRoute('/JinaSaraswati/', this.renderHome.bind(this));
+    this.router.addRoute('/JinaSaraswati/universe/:id', this.renderUniverse.bind(this));
+    this.router.addRoute('/JinaSaraswati/chapter/:universe/:chapter', this.renderChapter.bind(this));
+    this.router.addRoute('/JinaSaraswati/quiz/:id', this.renderQuiz.bind(this));
+    this.router.addRoute('/JinaSaraswati/achievements', this.renderAchievements.bind(this));
     
     // Initialize router
     this.router.init();
@@ -89,6 +89,11 @@ class JinasaraswatiApp {
   renderHome() {
     // Home screen is already in HTML
     this.updateHomeStats();
+  }
+  
+  updateHomeStats() {
+    // Update home screen statistics
+    console.log('Updating home stats');
   }
   
   async renderUniverse(params) {
@@ -100,9 +105,9 @@ class JinasaraswatiApp {
   async renderChapter(params) {
     const { universe, chapter } = params;
     
-    // Special handling for existing chapters
+    // Special handling for existing chapters - FIXED PATH
     if (universe === '4' && (chapter === '40' || chapter === '44')) {
-      const response = await fetch(`/universes/dravyanuyog/chapters/chapter-${chapter}.html`);
+      const response = await fetch(`/JinaSaraswati/universes/dravyanuyog/chapters/chapter-${chapter}.html`);
       const content = await response.text();
       
       // Wrap in app container while preserving original content
@@ -124,6 +129,14 @@ class JinasaraswatiApp {
     }
   }
   
+  renderQuiz(params) {
+    console.log('Rendering quiz:', params);
+  }
+  
+  renderAchievements() {
+    console.log('Rendering achievements');
+  }
+  
   initializeChapterInteractivity(chapterId) {
     // Add interactivity to existing chapter content
     if (chapterId === '40') {
@@ -135,22 +148,33 @@ class JinasaraswatiApp {
     }
   }
   
+  initializeDravyaSorter() {
+    console.log('Initializing Dravya Sorter');
+  }
+  
   loadDailyPrashna() {
     const today = new Date().toDateString();
     const lastPrashna = localStorage.getItem('lastPrashnaDate');
     
     if (lastPrashna !== today) {
-      fetch('/data/daily-prashnas.json')
+      // FIXED PATH - Added /JinaSaraswati/ prefix
+      fetch('/JinaSaraswati/data/daily-prashnas.json')
         .then(res => res.json())
         .then(prashnas => {
           const todaysPrashna = prashnas[Math.floor(Math.random() * prashnas.length)];
-          document.getElementById('daily-question').innerHTML = `
-            <p class="question">${todaysPrashna.question}</p>
-            <button class="reveal-btn" onclick="app.revealAnswer('${todaysPrashna.id}')">
-              उत्तर देखें
-            </button>
-          `;
+          const questionElement = document.getElementById('daily-question');
+          if (questionElement) {
+            questionElement.innerHTML = `
+              <p class="question">${todaysPrashna.question}</p>
+              <button class="reveal-btn" onclick="app.revealAnswer('${todaysPrashna.id}')">
+                उत्तर देखें
+              </button>
+            `;
+          }
           localStorage.setItem('lastPrashnaDate', today);
+        })
+        .catch(err => {
+          console.log('Error loading daily prashna:', err);
         });
     }
   }
@@ -176,6 +200,14 @@ class JinasaraswatiApp {
     
     // Save progress
     this.storage.saveUserData(this.userData);
+  }
+  
+  updateXPBar() {
+    const xpBar = document.querySelector('.xp-progress');
+    if (xpBar) {
+      const percentage = (this.userData.xp % 100);
+      xpBar.style.width = `${percentage}%`;
+    }
   }
   
   levelUp() {
@@ -222,7 +254,7 @@ class JinasaraswatiApp {
     document.querySelectorAll('.universe-card.unlocked').forEach(card => {
       card.addEventListener('click', (e) => {
         const universeId = e.currentTarget.dataset.universe;
-        this.router.navigate(`/universe/${universeId}`);
+        this.router.navigate(`/JinaSaraswati/universe/${universeId}`);
       });
     });
     
@@ -233,6 +265,11 @@ class JinasaraswatiApp {
       deferredPrompt = e;
       this.showInstallPrompt(deferredPrompt);
     });
+  }
+  
+  registerPushNotifications() {
+    // Placeholder for push notifications
+    console.log('Push notifications will be registered here');
   }
   
   showInstallPrompt(prompt) {
@@ -261,22 +298,24 @@ class JinasaraswatiApp {
   
   showAchievement(achievement) {
     const popup = document.getElementById('achievement-popup');
-    popup.innerHTML = `
-      <div class="achievement-content">
-        <span class="achievement-icon">${achievement.icon}</span>
-        <div>
-          <h4>${achievement.title}</h4>
-          <p>${achievement.description}</p>
+    if (popup) {
+      popup.innerHTML = `
+        <div class="achievement-content">
+          <span class="achievement-icon">${achievement.icon}</span>
+          <div>
+            <h4>${achievement.title}</h4>
+            <p>${achievement.description}</p>
+          </div>
         </div>
-      </div>
-    `;
-    popup.classList.remove('hidden');
-    popup.classList.add('show');
-    
-    setTimeout(() => {
-      popup.classList.remove('show');
-      popup.classList.add('hidden');
-    }, 3000);
+      `;
+      popup.classList.remove('hidden');
+      popup.classList.add('show');
+      
+      setTimeout(() => {
+        popup.classList.remove('show');
+        popup.classList.add('hidden');
+      }, 3000);
+    }
   }
 }
 
