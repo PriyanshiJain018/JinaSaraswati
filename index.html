@@ -1,129 +1,273 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#8B4513">
-    <title>जिनसरस्वती - Jainism Learning Journey</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>JinaSaraswati - Learn Jainism Interactively</title>
     
     <!-- PWA Meta Tags -->
-    <link rel="manifest" href="/JinaSaraswati/manifest.json">
-    <link rel="apple-touch-icon" href="/JinaSaraswati/assets/icons/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8B4513">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
     
-    <!-- Preconnect for Performance -->
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Learn Jainism through interactive stories, games, and spiritual wisdom. Explore the four Anuyogas with gamified learning.">
+    <meta property="og:title" content="JinaSaraswati - Interactive Jainism Learning">
+    <meta property="og:description" content="Embark on a spiritual journey through Jain philosophy with games, quizzes, and immersive experiences.">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <!-- Offline capabilities -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="mobile-web-app-capable" content="yes">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Preload critical assets -->
-    <link rel="preload" href="/css/main.css" as="style">
-    <link rel="preload" href="/js/app.js" as="script">
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
     
-    <!-- DNS Prefetch for fonts -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    
-    <!-- Stylesheets -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/JinaSaraswati/css/main.css">
-    <link rel="stylesheet" href="/JinaSaraswati/css/animations.css">
-    <link rel="stylesheet" href="/JinaSaraswati/css/themes.css">
-    
-    <!-- Splash Screen Style -->
     <style>
+        /* Critical CSS for initial render */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif; overflow-x: hidden; }
         .splash-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #8B4513 0%, #DEB887 100%);
+            background: linear-gradient(135deg, #8B4513 0%, #DAA520 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.5s ease-out;
+            animation: fadeIn 0.5s ease;
         }
-        
-        .soul-loader {
-            width: 120px;
-            height: 120px;
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .mandala-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top-color: white;
             border-radius: 50%;
-            background: radial-gradient(circle, #FFD700, #FFA500);
-            animation: pulse 2s infinite;
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+            animation: rotate 1s linear infinite;
+            margin-bottom: 20px;
         }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+        .splash-screen h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .splash-screen p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
     <!-- Splash Screen -->
     <div id="splash" class="splash-screen">
-        <div class="soul-loader"></div>
-        <h1 style="color: white; margin-top: 30px; font-family: 'Noto Sans Devanagari';">
-            जिनसरस्वती
-        </h1>
-        <p style="color: rgba(255,255,255,0.8);">आत्मा की यात्रा...</p>
+        <div class="mandala-spinner"></div>
+        <h1>जिनसरस्वती</h1>
+        <p>Loading spiritual wisdom...</p>
     </div>
-
+    
     <!-- Main App Container -->
-    <div id="app" class="app-container" style="display: none;">
-        <!-- Dynamic Navigation -->
-        <nav id="main-nav" class="bottom-nav"></nav>
+    <div id="app" class="app-container" style="display:none;">
+        <!-- Header -->
+        <header id="app-header" class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button id="menu-toggle" class="menu-toggle" aria-label="Menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <h1 class="app-title">JinaSaraswati</h1>
+                </div>
+                <div class="header-right">
+                    <div class="xp-display">
+                        <span class="xp-icon">⭐</span>
+                        <span id="user-xp">0</span> XP
+                    </div>
+                    <button id="lang-toggle" class="lang-toggle">
+                        <span id="current-lang">EN</span>
+                    </button>
+                </div>
+            </div>
+        </header>
         
-        <!-- Content Router View -->
-        <main id="router-view" class="content-area">
+        <!-- Progress Bar -->
+        <div class="global-progress">
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="level-info">
+                Level <span id="user-level">1</span> • <span id="streak-count">0</span> day streak 🔥
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <main id="main-content" class="main-content">
             <!-- Home Screen -->
-            <div class="home-screen">
-                <div class="welcome-header">
-                    <div class="soul-avatar" id="user-soul"></div>
-                    <h2>नमस्कार साधक! 🙏</h2>
-                    <div class="xp-bar">
-                        <div class="xp-progress" data-xp="0"></div>
-                        <span class="level-badge">Level 1</span>
+            <div id="home-screen" class="screen active">
+                <!-- Daily Prashna Card -->
+                <div class="daily-prashna-card floating-card">
+                    <div class="card-header">
+                        <h2>📜 Daily Prashna</h2>
+                        <span class="xp-badge">+10 XP</span>
+                    </div>
+                    <div class="prashna-content">
+                        <p id="daily-question" class="question">Loading today's wisdom...</p>
+                        <button id="reveal-answer" class="btn-primary">Reveal Answer</button>
+                        <div id="answer-container" class="answer-container" style="display:none;">
+                            <p id="daily-answer" class="answer"></p>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Universe Grid -->
-                <div class="universe-grid">
-                    <div class="universe-card dravyanuyog unlocked" data-universe="4">
-                        <div class="universe-icon">🔮</div>
-                        <h3>द्रव्यानुयोग</h3>
-                        <p>Universe of Reality</p>
-                        <div class="progress-ring" data-progress="10"></div>
-                    </div>
-                    <!-- Other universes (locked initially) -->
-                    <div class="universe-card locked">
-                        <div class="lock-overlay">🔒</div>
+                <div class="universes-section">
+                    <h2 class="section-title">Four Universes of Knowledge</h2>
+                    <div id="universe-grid" class="universe-grid">
+                        <!-- Universe cards will be dynamically loaded here -->
                     </div>
                 </div>
                 
-                <!-- Daily Prashna Widget -->
-                <div class="daily-prashna-card">
-                    <h3>📜 आज का प्रश्न</h3>
-                    <div id="daily-question"></div>
+                <!-- Quick Stats -->
+                <div class="stats-card floating-card">
+                    <h3>Your Journey</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-chapters">0</span>
+                            <span class="stat-label">Chapters Completed</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-badges">0</span>
+                            <span class="stat-label">Badges Earned</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="karma-score">0</span>
+                            <span class="stat-label">Karma Points</span>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            
+            <!-- Universe View (dynamically loaded) -->
+            <div id="universe-view" class="screen" style="display:none;">
+                <!-- Content loaded dynamically -->
+            </div>
+            
+            <!-- Chapter View (for existing chapters) -->
+            <div id="chapter-view" class="screen" style="display:none;">
+                <iframe id="chapter-frame" class="chapter-frame"></iframe>
             </div>
         </main>
         
-        <!-- Achievement Popup -->
-        <div id="achievement-popup" class="achievement-popup hidden"></div>
+        <!-- Karma Visualizer (floating) -->
+        <div id="karma-visualizer" class="karma-visualizer">
+            <canvas id="karma-canvas"></canvas>
+            <div class="leshya-indicator">
+                <span id="leshya-state">शुक्ल</span>
+            </div>
+        </div>
         
-        <!-- Karma Particles Canvas -->
-        <canvas id="karma-particles" class="karma-canvas"></canvas>
+        <!-- Bottom Navigation -->
+        <nav id="bottom-nav" class="bottom-nav">
+            <button class="nav-item active" data-screen="home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-item" data-screen="explore">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Explore</span>
+            </button>
+            <button class="nav-item" data-screen="achievements">
+                <span class="nav-icon">🏆</span>
+                <span class="nav-label">Badges</span>
+            </button>
+            <button class="nav-item" data-screen="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </button>
+        </nav>
+        
+        <!-- Side Menu -->
+        <div id="side-menu" class="side-menu">
+            <div class="menu-header">
+                <img src="assets/images/jain-symbol.svg" alt="Jain Symbol" class="menu-logo">
+                <h2>जिनसरस्वती</h2>
+            </div>
+            <nav class="menu-nav">
+                <a href="#" class="menu-item" data-page="sutras">
+                    <span class="menu-icon">📿</span>
+                    <span>Sutras & Mantras</span>
+                </a>
+                <a href="#" class="menu-item" data-page="meditation">
+                    <span class="menu-icon">🧘</span>
+                    <span>Meditation Timer</span>
+                </a>
+                <a href="#" class="menu-item" data-page="glossary">
+                    <span class="menu-icon">📖</span>
+                    <span>Glossary</span>
+                </a>
+                <a href="#" class="menu-item" data-page="settings">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="menu-item" data-page="about">
+                    <span class="menu-icon">ℹ️</span>
+                    <span>About</span>
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Overlay -->
+        <div id="menu-overlay" class="menu-overlay"></div>
+        
+        <!-- Achievement Popup -->
+        <div id="achievement-popup" class="achievement-popup">
+            <div class="achievement-content">
+                <span class="achievement-icon">🏆</span>
+                <h3 id="achievement-title">Achievement Unlocked!</h3>
+                <p id="achievement-desc">Description</p>
+            </div>
+        </div>
+        
+        <!-- Install Prompt -->
+        <div id="install-prompt" class="install-prompt" style="display:none;">
+            <div class="prompt-content">
+                <h3>Install JinaSaraswati</h3>
+                <p>Add to your home screen for the best experience!</p>
+                <div class="prompt-buttons">
+                    <button id="install-later" class="btn-secondary">Later</button>
+                    <button id="install-now" class="btn-primary">Install</button>
+                </div>
+            </div>
+        </div>
     </div>
-
+    
     <!-- Scripts -->
-    <script src="/JinaSaraswati/js/sw-register.js"></script>
-    <script src="/JinaSaraswati/js/app.js" type="module"></script>
+    <script type="module" src="js/app.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
+        }
+        
+        // Quick initialization
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+        }, 2000);
+    </script>
 </body>
 </html>
