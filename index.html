@@ -2,272 +2,770 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>JinaSaraswati - Learn Jainism Interactively</title>
     
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#8B4513">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
-    
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Learn Jainism through interactive stories, games, and spiritual wisdom. Explore the four Anuyogas with gamified learning.">
-    <meta property="og:title" content="JinaSaraswati - Interactive Jainism Learning">
-    <meta property="og:description" content="Embark on a spiritual journey through Jain philosophy with games, quizzes, and immersive experiences.">
     
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Critical CSS for initial render */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif; overflow-x: hidden; }
-        .splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #FFF8DC 0%, #F5E6D3 100%);
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .xp-display {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        /* Progress Bar */
+        .global-progress {
+            background: #F5E6D3;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #E0D4B8;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
             height: 100%;
-            background: linear-gradient(135deg, #8B4513 0%, #DAA520 100%);
+            background: linear-gradient(90deg, #DAA520 0%, #FFD700 100%);
+            width: 10%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 1.5rem;
+            padding-bottom: 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Daily Prashna Card */
+        .daily-prashna-card {
+            background: linear-gradient(135deg, rgba(218,165,32,0.1) 0%, rgba(255,215,0,0.1) 100%);
+            border: 2px solid #DAA520;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-header h2 {
+            font-size: 1.25rem;
+            color: #8B4513;
+        }
+        
+        .xp-badge {
+            background: #228B22;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .prashna-content {
+            text-align: center;
+        }
+        
+        .question {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            font-style: italic;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        
+        .answer-container {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(34,139,34,0.1);
+            border-radius: 12px;
+            border-left: 4px solid #228B22;
+            display: none;
+        }
+        
+        .answer {
+            color: #333;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        /* Universe Section */
+        .section-title {
+            font-size: 1.5rem;
+            color: #8B4513;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .universe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .universe-card {
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+        
+        .universe-card:hover:not(.locked) {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .universe-card.locked {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .universe-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .universe-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .universe-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+        
+        .universe-desc {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .universe-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .lock-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            opacity: 0.5;
+        }
+        
+        /* Stats Card */
+        .stats-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stats-card h3 {
+            color: #8B4513;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #8B4513;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #E0D4B8;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            z-index: 9999;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active {
+            color: #8B4513;
+        }
+        
+        .nav-icon {
+            font-size: 1.5rem;
+        }
+        
+        .nav-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Universe Detail View */
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .universe-detail {
             animation: fadeIn 0.5s ease;
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .mandala-spinner {
-            width: 80px;
-            height: 80px;
-            border: 4px solid rgba(255,255,255,0.2);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: rotate 1s linear infinite;
-            margin-bottom: 20px;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        .splash-screen h1 {
+        
+        .universe-banner {
+            padding: 2rem;
             color: white;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            position: relative;
         }
-        .splash-screen p {
-            color: rgba(255,255,255,0.8);
-            font-size: 1rem;
+        
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .stage-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .chapter-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #F5E6D3;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-align: left;
+            margin-top: 1rem;
+        }
+        
+        .chapter-btn:hover {
+            background: #E0D4B8;
+        }
+        
+        .chapter-icon {
+            font-size: 2rem;
+        }
+        
+        .progress-badge {
+            margin-left: auto;
+            background: #228B22;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .chapter-frame {
+            width: 100%;
+            height: calc(100vh - 60px);
+            border: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .universe-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Splash Screen -->
-    <div id="splash" class="splash-screen">
-        <div class="mandala-spinner"></div>
-        <h1>जिनसरस्वती</h1>
-        <p>Loading spiritual wisdom...</p>
-    </div>
-    
-    <!-- Main App Container -->
-    <div id="app" class="app-container" style="display:none;">
-        <!-- Header -->
-        <header id="app-header" class="app-header">
-            <div class="header-content">
-                <div class="header-left">
-                    <button id="menu-toggle" class="menu-toggle" aria-label="Menu">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                    <h1 class="app-title">JinaSaraswati</h1>
-                </div>
-                <div class="header-right">
-                    <div class="xp-display">
-                        <span class="xp-icon">⭐</span>
-                        <span id="user-xp">0</span> XP
-                    </div>
-                    <button id="lang-toggle" class="lang-toggle">
-                        <span id="current-lang">EN</span>
-                    </button>
-                </div>
-            </div>
-        </header>
-        
-        <!-- Progress Bar -->
-        <div class="global-progress">
-            <div class="progress-bar">
-                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
-            </div>
-            <div class="level-info">
-                Level <span id="user-level">1</span> • <span id="streak-count">0</span> day streak 🔥
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <h1 class="app-title">JinaSaraswati</h1>
+            <div class="xp-display">
+                ⭐ <span id="user-xp">0</span> XP
             </div>
         </div>
-        
-        <!-- Main Content Area -->
-        <main id="main-content" class="main-content">
-            <!-- Home Screen -->
-            <div id="home-screen" class="screen active">
-                <!-- Daily Prashna Card -->
-                <div class="daily-prashna-card floating-card">
-                    <div class="card-header">
-                        <h2>📜 Daily Prashna</h2>
-                        <span class="xp-badge">+10 XP</span>
-                    </div>
-                    <div class="prashna-content">
-                        <p id="daily-question" class="question">Loading today's wisdom...</p>
-                        <button id="reveal-answer" class="btn-primary">Reveal Answer</button>
-                        <div id="answer-container" class="answer-container" style="display:none;">
-                            <p id="daily-answer" class="answer"></p>
-                        </div>
-                    </div>
+    </header>
+    
+    <!-- Progress Bar -->
+    <div class="global-progress">
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <div class="level-info">
+            <span>Level <span id="user-level">1</span></span>
+            <span><span id="streak-count">0</span> day streak 🔥</span>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Screen -->
+        <div id="home-screen" class="screen active">
+            <!-- Daily Prashna Card -->
+            <div class="daily-prashna-card">
+                <div class="card-header">
+                    <h2>📜 Daily Prashna</h2>
+                    <span class="xp-badge">+10 XP</span>
                 </div>
-                
-                <!-- Universe Grid -->
-                <div class="universes-section">
-                    <h2 class="section-title">Four Universes of Knowledge</h2>
-                    <div id="universe-grid" class="universe-grid">
-                        <!-- Universe cards will be dynamically loaded here -->
-                    </div>
-                </div>
-                
-                <!-- Quick Stats -->
-                <div class="stats-card floating-card">
-                    <h3>Your Journey</h3>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-value" id="total-chapters">0</span>
-                            <span class="stat-label">Chapters Completed</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value" id="total-badges">0</span>
-                            <span class="stat-label">Badges Earned</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value" id="karma-score">0</span>
-                            <span class="stat-label">Karma Points</span>
-                        </div>
+                <div class="prashna-content">
+                    <p id="daily-question" class="question">Loading today's wisdom...</p>
+                    <button id="reveal-answer" class="btn-primary" onclick="revealAnswer()">Reveal Answer</button>
+                    <div id="answer-container" class="answer-container">
+                        <p id="daily-answer" class="answer"></p>
                     </div>
                 </div>
             </div>
             
-            <!-- Universe View (dynamically loaded) -->
-            <div id="universe-view" class="screen" style="display:none;">
-                <!-- Content loaded dynamically -->
+            <!-- Universe Grid -->
+            <h2 class="section-title">Four Universes of Knowledge</h2>
+            <div id="universe-grid" class="universe-grid">
+                <!-- Universes will be added here by JavaScript -->
             </div>
             
-            <!-- Chapter View (for existing chapters) -->
-            <div id="chapter-view" class="screen" style="display:none;">
-                <iframe id="chapter-frame" class="chapter-frame"></iframe>
-            </div>
-        </main>
-        
-        <!-- Karma Visualizer (floating) -->
-        <div id="karma-visualizer" class="karma-visualizer">
-            <canvas id="karma-canvas"></canvas>
-            <div class="leshya-indicator">
-                <span id="leshya-state">शुक्ल</span>
-            </div>
-        </div>
-        
-        <!-- Bottom Navigation -->
-        <nav id="bottom-nav" class="bottom-nav">
-            <button class="nav-item active" data-screen="home">
-                <span class="nav-icon">🏠</span>
-                <span class="nav-label">Home</span>
-            </button>
-            <button class="nav-item" data-screen="explore">
-                <span class="nav-icon">🔍</span>
-                <span class="nav-label">Explore</span>
-            </button>
-            <button class="nav-item" data-screen="achievements">
-                <span class="nav-icon">🏆</span>
-                <span class="nav-label">Badges</span>
-            </button>
-            <button class="nav-item" data-screen="profile">
-                <span class="nav-icon">👤</span>
-                <span class="nav-label">Profile</span>
-            </button>
-        </nav>
-        
-        <!-- Side Menu -->
-        <div id="side-menu" class="side-menu">
-            <div class="menu-header">
-                <img src="assets/images/jain-symbol.svg" alt="Jain Symbol" class="menu-logo">
-                <h2>जिनसरस्वती</h2>
-            </div>
-            <nav class="menu-nav">
-                <a href="#" class="menu-item" data-page="sutras">
-                    <span class="menu-icon">📿</span>
-                    <span>Sutras & Mantras</span>
-                </a>
-                <a href="#" class="menu-item" data-page="meditation">
-                    <span class="menu-icon">🧘</span>
-                    <span>Meditation Timer</span>
-                </a>
-                <a href="#" class="menu-item" data-page="glossary">
-                    <span class="menu-icon">📖</span>
-                    <span>Glossary</span>
-                </a>
-                <a href="#" class="menu-item" data-page="settings">
-                    <span class="menu-icon">⚙️</span>
-                    <span>Settings</span>
-                </a>
-                <a href="#" class="menu-item" data-page="about">
-                    <span class="menu-icon">ℹ️</span>
-                    <span>About</span>
-                </a>
-            </nav>
-        </div>
-        
-        <!-- Overlay -->
-        <div id="menu-overlay" class="menu-overlay"></div>
-        
-        <!-- Achievement Popup -->
-        <div id="achievement-popup" class="achievement-popup">
-            <div class="achievement-content">
-                <span class="achievement-icon">🏆</span>
-                <h3 id="achievement-title">Achievement Unlocked!</h3>
-                <p id="achievement-desc">Description</p>
-            </div>
-        </div>
-        
-        <!-- Install Prompt -->
-        <div id="install-prompt" class="install-prompt" style="display:none;">
-            <div class="prompt-content">
-                <h3>Install JinaSaraswati</h3>
-                <p>Add to your home screen for the best experience!</p>
-                <div class="prompt-buttons">
-                    <button id="install-later" class="btn-secondary">Later</button>
-                    <button id="install-now" class="btn-primary">Install</button>
+            <!-- Stats Card -->
+            <div class="stats-card">
+                <h3>Your Journey</h3>
+                <div class="stats-grid">
+                    <div>
+                        <span class="stat-value" id="total-chapters">0</span>
+                        <span class="stat-label">Chapters Completed</span>
+                    </div>
+                    <div>
+                        <span class="stat-value" id="total-badges">0</span>
+                        <span class="stat-label">Badges Earned</span>
+                    </div>
+                    <div>
+                        <span class="stat-value" id="karma-score">0</span>
+                        <span class="stat-label">Karma Points</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        
+        <!-- Universe View -->
+        <div id="universe-view" class="screen">
+            <!-- Content will be added dynamically -->
+        </div>
+        
+        <!-- Chapter View -->
+        <div id="chapter-view" class="screen">
+            <iframe id="chapter-frame" class="chapter-frame"></iframe>
+        </div>
+    </main>
     
-    <!-- Scripts -->
-    <script type="module" src="js/app.js"></script>
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="navigateToScreen('home')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-item" onclick="navigateToScreen('explore')">
+            <span class="nav-icon">🔍</span>
+            <span class="nav-label">Explore</span>
+        </button>
+        <button class="nav-item" onclick="navigateToScreen('badges')">
+            <span class="nav-icon">🏆</span>
+            <span class="nav-label">Badges</span>
+        </button>
+        <button class="nav-item" onclick="navigateToScreen('profile')">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Profile</span>
+        </button>
+    </nav>
+    
     <script>
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker registered'))
-                    .catch(err => console.error('Service Worker registration failed:', err));
+        // Global state
+        let userState = {
+            level: 1,
+            xp: 0,
+            streak: 0,
+            completedChapters: [],
+            achievements: [],
+            karmaScore: 0
+        };
+        
+        // Universes data
+        const universes = [
+            {
+                id: 'prathamanuyoga',
+                name: 'Prathamānuyoga',
+                subtitle: 'Universe of Narratives',
+                description: 'Learn through stories of Tīrthaṅkaras',
+                color: 'linear-gradient(135deg, #8B4513, #A0522D)',
+                icon: '📚',
+                locked: false,
+                progress: 0
+            },
+            {
+                id: 'karananuyoga',
+                name: 'Karaṇānuyoga',
+                subtitle: 'Universe of Cosmology',
+                description: 'Explore Jain geography & cosmos',
+                color: 'linear-gradient(135deg, #4682B4, #5F9EA0)',
+                icon: '🌌',
+                locked: true,
+                progress: 0
+            },
+            {
+                id: 'charananuyoga',
+                name: 'Charaṇānuyoga',
+                subtitle: 'Universe of Conduct',
+                description: 'Ethics for householders',
+                color: 'linear-gradient(135deg, #228B22, #32CD32)',
+                icon: '⚖️',
+                locked: true,
+                progress: 0
+            },
+            {
+                id: 'dravyanuyoga',
+                name: 'Dravyānuyoga',
+                subtitle: 'Universe of Reality',
+                description: 'Fundamental substances & metaphysics',
+                color: 'linear-gradient(135deg, #9370DB, #8A2BE2)',
+                icon: '🔮',
+                locked: false,
+                progress: 25
+            }
+        ];
+        
+        // Daily questions
+        const dailyQuestions = [
+            {
+                question: "What are the five main vows (Pancha Mahavrata) of Jainism?",
+                answer: "Ahimsa (non-violence), Satya (truth), Asteya (non-stealing), Brahmacharya (celibacy), Aparigraha (non-possessiveness)"
+            },
+            {
+                question: "Who was the first Tirthankara?",
+                answer: "Lord Rishabhadeva (Adinath) - He taught humanity the arts of civilization including writing, agriculture, and crafts"
+            },
+            {
+                question: "What does 'Jina' mean?",
+                answer: "Conqueror - one who has conquered inner enemies like anger, greed, ego, and attachment"
+            },
+            {
+                question: "What are the eight types of karma in Jainism?",
+                answer: "Jnanavarana, Darshanavarana, Vedaniya, Mohaniya, Ayu, Nama, Gotra, and Antaraya"
+            },
+            {
+                question: "What is the significance of Namokara Mantra?",
+                answer: "It is the most fundamental prayer in Jainism, paying homage to the five supreme beings (Panch Parmeshthi)"
+            }
+        ];
+        
+        // Initialize app
+        function init() {
+            loadUserState();
+            renderUniverses();
+            loadDailyQuestion();
+            updateUI();
+        }
+        
+        // Load user state from localStorage
+        function loadUserState() {
+            const saved = localStorage.getItem('jinasaraswati_state');
+            if (saved) {
+                userState = JSON.parse(saved);
+            }
+        }
+        
+        // Save user state
+        function saveUserState() {
+            localStorage.setItem('jinasaraswati_state', JSON.stringify(userState));
+        }
+        
+        // Render universe cards
+        function renderUniverses() {
+            const grid = document.getElementById('universe-grid');
+            grid.innerHTML = '';
+            
+            universes.forEach(universe => {
+                const card = document.createElement('div');
+                card.className = `universe-card ${universe.locked ? 'locked' : ''}`;
+                card.style.background = universe.color;
+                
+                card.innerHTML = `
+                    ${universe.locked ? '<span class="lock-badge">🔒</span>' : ''}
+                    <div class="universe-icon">${universe.icon}</div>
+                    <h3 class="universe-name">${universe.name}</h3>
+                    <p class="universe-subtitle">${universe.subtitle}</p>
+                    <p class="universe-desc">${universe.description}</p>
+                    <div class="universe-footer">
+                        <span style="opacity: 0.8">Progress: ${universe.progress}%</span>
+                    </div>
+                `;
+                
+                if (!universe.locked) {
+                    card.onclick = () => openUniverse(universe);
+                }
+                
+                grid.appendChild(card);
             });
         }
         
-        // Quick initialization
-        setTimeout(() => {
-            document.getElementById('splash').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-        }, 2000);
+        // Open universe
+        function openUniverse(universe) {
+            if (universe.id === 'dravyanuyoga') {
+                const content = `
+                    <div class="universe-detail">
+                        <button class="back-btn" onclick="navigateToScreen('home')">← Back</button>
+                        <div class="universe-banner" style="background: ${universe.color};">
+                            <h1>${universe.icon} ${universe.name}</h1>
+                            <p>${universe.description}</p>
+                        </div>
+                        
+                        <div class="stage-card">
+                            <h2>Stage 1: Eight Types of Karma</h2>
+                            <p>Understand how karma binds the soul and affects spiritual progress</p>
+                            <button class="chapter-btn" onclick="loadChapter('chapter-40')">
+                                <span class="chapter-icon">📖</span>
+                                <div>
+                                    <h3>Chapter 40: Aṣṭa Karma</h3>
+                                    <p>The Eight Types of Karma</p>
+                                </div>
+                                <span class="progress-badge">Interactive</span>
+                            </button>
+                        </div>
+                        
+                        <div class="stage-card">
+                            <h2>Stage 2: Subtle Passions & Soul States</h2>
+                            <p>Learn about Nokashayas and the journey of consciousness</p>
+                            <button class="chapter-btn" onclick="loadChapter('chapter-42')">
+                                <span class="chapter-icon">📖</span>
+                                <div>
+                                    <h3>Chapter 42: Nokashaya</h3>
+                                    <p>The Nine Subtle Passions</p>
+                                </div>
+                                <span class="progress-badge">Interactive</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('universe-view').innerHTML = content;
+                navigateToScreen('universe-view');
+            } else {
+                alert(`${universe.name} is coming soon!`);
+            }
+        }
+        
+        // Load chapter
+        function loadChapter(chapterId) {
+            const frame = document.getElementById('chapter-frame');
+            frame.src = `universes/dravyanuyoga/${chapterId}.html`;
+            navigateToScreen('chapter-view');
+            addXP(5);
+        }
+        
+        // Navigate between screens
+        function navigateToScreen(screenName) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show selected screen
+            const targetScreen = document.getElementById(`${screenName}-screen`) || 
+                               document.getElementById(`${screenName}-view`);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+            
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+        
+        // Load daily question
+        function loadDailyQuestion() {
+            const today = new Date().toDateString();
+            const index = today.length % dailyQuestions.length;
+            const q = dailyQuestions[index];
+            
+            document.getElementById('daily-question').textContent = q.question;
+            document.getElementById('daily-answer').textContent = q.answer;
+        }
+        
+        // Reveal answer
+        function revealAnswer() {
+            document.getElementById('answer-container').style.display = 'block';
+            document.getElementById('reveal-answer').style.display = 'none';
+            addXP(10);
+        }
+        
+        // Add XP
+        function addXP(amount) {
+            userState.xp += amount;
+            const newLevel = Math.floor(userState.xp / 100) + 1;
+            if (newLevel > userState.level) {
+                userState.level = newLevel;
+                alert(`🎉 Level Up! You reached Level ${newLevel}!`);
+            }
+            saveUserState();
+            updateUI();
+        }
+        
+        // Update UI
+        function updateUI() {
+            document.getElementById('user-xp').textContent = userState.xp;
+            document.getElementById('user-level').textContent = userState.level;
+            document.getElementById('streak-count').textContent = userState.streak;
+            document.getElementById('total-chapters').textContent = userState.completedChapters.length;
+            document.getElementById('total-badges').textContent = userState.achievements.length;
+            document.getElementById('karma-score').textContent = userState.karmaScore;
+            
+            const progress = (userState.xp % 100);
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+        
+        // Initialize on load
+        window.onload = init;
+        
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
     </script>
 </body>
 </html>
