@@ -1,325 +1,458 @@
-// Main App Controller - Fixed with correct paths
+// app.js - Main Application Logic
 import { Router } from './router.js';
-import { Storage } from './storage.js';
-import { Achievements } from './achievements.js';
-import { KarmaVisualizer } from './karma-visualizer.js';
-import { UniverseNavigator } from './universe-navigator.js';
+import { State } from './state.js';
+import { KarmaVisualizer } from '../modules/karma-visualizer.js';
+import { DailyPrashna } from '../modules/daily-prashna.js';
+import { Achievements } from '../modules/achievements.js';
 
-class JinasaraswatiApp {
-  constructor() {
-    this.router = new Router();
-    this.storage = new Storage();
-    this.achievements = new Achievements();
-    this.karmaViz = new KarmaVisualizer();
-    this.navigator = new UniverseNavigator();
-    
-    this.init();
-  }
-  
-  async init() {
-    // Hide splash screen
-    await this.initializeSplash();
-    
-    // Load user progress
-    this.userData = this.storage.getUserData();
-    
-    // Initialize soul avatar with current Leśyā
-    this.initializeSoulAvatar();
-    
-    // Setup routing
-    this.setupRouting();
-    
-    // Load daily prashna
-    this.loadDailyPrashna();
-    
-    // Initialize karma particles
-    this.karmaViz.init('karma-particles');
-    
-    // Check for achievements
-    this.achievements.check(this.userData);
-    
-    // Setup event listeners
-    this.attachEventListeners();
-    
-    // Register for push notifications
-    this.registerPushNotifications();
-  }
-  
-  initializeSplash() {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const splash = document.getElementById('splash');
-        const app = document.getElementById('app');
+class JinaSaraswatiApp {
+    constructor() {
+        this.state = new State();
+        this.router = new Router();
+        this.karmaViz = null;
+        this.dailyPrashna = null;
+        this.achievements = null;
+        this.currentLanguage = localStorage.getItem('language') || 'en';
+        this.universes = [
+            {
+                id: 'prathamanuyoga',
+                name: { en: 'Prathamānuyoga', hi: 'प्रथमानुयोग' },
+                subtitle: { en: 'Universe of Narratives', hi: 'कथाओं का ब्रह्मांड' },
+                description: { en: 'Learn through stories of Tīrthaṅkaras', hi: 'तीर्थंकरों की कथाओं से सीखें' },
+                color: '#8B4513',
+                icon: '📚',
+                locked: false,
+                progress: 0,
+                stages: [
+                    { id: 'stage1', name: 'The First Tīrthaṅkara', chapters: ['ch1', 'ch7'] },
+                    { id: 'stage2', name: 'The Last Two Tīrthaṅkaras', chapters: ['ch8', 'ch9'] }
+                ]
+            },
+            {
+                id: 'karananuyoga',
+                name: { en: 'Karaṇānuyoga', hi: 'करणानुयोग' },
+                subtitle: { en: 'Universe of Cosmology', hi: 'ब्रह्मांड विज्ञान' },
+                description: { en: 'Explore Jain geography & cosmos', hi: 'जैन भूगोल और ब्रह्मांड का अन्वेषण' },
+                color: '#4682B4',
+                icon: '🌌',
+                locked: true,
+                progress: 0,
+                stages: [
+                    { id: 'stage1', name: 'Structure of Universe', chapters: ['ch15', 'ch16'] },
+                    { id: 'stage2', name: 'Three Higher Realms', chapters: ['ch18', 'ch19'] }
+                ]
+            },
+            {
+                id: 'charananuyoga',
+                name: { en: 'Charaṇānuyoga', hi: 'चरणानुयोग' },
+                subtitle: { en: 'Universe of Conduct', hi: 'आचरण का ब्रह्मांड' },
+                description: { en: 'Ethics for householders', hi: 'गृहस्थों के लिए नैतिकता' },
+                color: '#228B22',
+                icon: '⚖️',
+                locked: true,
+                progress: 0,
+                stages: [
+                    { id: 'stage1', name: 'Five Vows', chapters: [] },
+                    { id: 'stage2', name: 'Twelve Vows', chapters: [] }
+                ]
+            },
+            {
+                id: 'dravyanuyoga',
+                name: { en: 'Dravyānuyoga', hi: 'द्रव्यानुयोग' },
+                subtitle: { en: 'Universe of Reality', hi: 'तत्त्व का ब्रह्मांड' },
+                description: { en: 'Fundamental substances & metaphysics', hi: 'मौलिक द्रव्य और तत्त्वमीमांसा' },
+                color: '#9370DB',
+                icon: '🔮',
+                locked: true,
+                progress: 25, // Since we have chapters 40 & 42
+                stages: [
+                    { id: 'stage1', name: 'Eight Types of Karma', chapters: ['chapter-40'] },
+                    { id: 'stage2', name: 'Nokashayas & Soul States', chapters: ['chapter-42'] }
+                ]
+            }
+        ];
         
-        splash.style.opacity = '0';
-        setTimeout(() => {
-          splash.style.display = 'none';
-          app.style.display = 'block';
-          app.classList.add('fade-in');
-          resolve();
-        }, 500);
-      }, 2000);
-    });
-  }
-  
-  initializeSoulAvatar() {
-    const soul = document.getElementById('user-soul');
-    const lesya = this.userData.currentLesya || 'krishna'; // Default: Black
-    
-    // Apply Leśyā-based styling
-    soul.className = `soul-avatar lesya-${lesya}`;
-    
-    // Add karma particles based on karma level
-    const karmaLevel = this.userData.karmaLevel || 100;
-    this.karmaViz.setDensity(karmaLevel);
-  }
-  
-  setupRouting() {
-    // Define routes with correct base path
-    this.router.addRoute('/JinaSaraswati/', this.renderHome.bind(this));
-    this.router.addRoute('/JinaSaraswati/universe/:id', this.renderUniverse.bind(this));
-    this.router.addRoute('/JinaSaraswati/chapter/:universe/:chapter', this.renderChapter.bind(this));
-    this.router.addRoute('/JinaSaraswati/quiz/:id', this.renderQuiz.bind(this));
-    this.router.addRoute('/JinaSaraswati/achievements', this.renderAchievements.bind(this));
-    
-    // Initialize router
-    this.router.init();
-  }
-  
-  renderHome() {
-    // Home screen is already in HTML
-    this.updateHomeStats();
-  }
-  
-  updateHomeStats() {
-    // Update home screen statistics
-    console.log('Updating home stats');
-  }
-  
-  async renderUniverse(params) {
-    const universeId = params.id;
-    const content = await this.navigator.loadUniverse(universeId);
-    document.getElementById('router-view').innerHTML = content;
-  }
-  
-  async renderChapter(params) {
-    const { universe, chapter } = params;
-    
-    // Special handling for existing chapters - FIXED PATH
-    if (universe === '4' && (chapter === '40' || chapter === '44')) {
-      const response = await fetch(`/JinaSaraswati/universes/dravyanuyog/chapters/chapter-${chapter}.html`);
-      const content = await response.text();
-      
-      // Wrap in app container while preserving original content
-      const wrappedContent = `
-        <div class="chapter-wrapper">
-          <button class="back-btn" onclick="history.back()">← वापस</button>
-          ${content}
-          <div class="chapter-nav">
-            <button class="nav-prev">Previous</button>
-            <button class="nav-next">Next</button>
-          </div>
-        </div>
-      `;
-      
-      document.getElementById('router-view').innerHTML = wrappedContent;
-      
-      // Re-initialize any chapter-specific scripts
-      this.initializeChapterInteractivity(chapter);
+        this.init();
     }
-  }
-  
-  renderQuiz(params) {
-    console.log('Rendering quiz:', params);
-  }
-  
-  renderAchievements() {
-    console.log('Rendering achievements');
-  }
-  
-  initializeChapterInteractivity(chapterId) {
-    // Add interactivity to existing chapter content
-    if (chapterId === '40') {
-      // Karma theory specific features
-      this.karmaViz.attachToChapter();
-    } else if (chapterId === '44') {
-      // Six substances specific features
-      this.initializeDravyaSorter();
-    }
-  }
-  
-  initializeDravyaSorter() {
-    console.log('Initializing Dravya Sorter');
-  }
-  
-  loadDailyPrashna() {
-    const today = new Date().toDateString();
-    const lastPrashna = localStorage.getItem('lastPrashnaDate');
     
-    if (lastPrashna !== today) {
-      // FIXED PATH - Added /JinaSaraswati/ prefix
-      fetch('/JinaSaraswati/data/daily-prashnas.json')
-        .then(res => res.json())
-        .then(prashnas => {
-          const todaysPrashna = prashnas[Math.floor(Math.random() * prashnas.length)];
-          const questionElement = document.getElementById('daily-question');
-          if (questionElement) {
-            questionElement.innerHTML = `
-              <p class="question">${todaysPrashna.question}</p>
-              <button class="reveal-btn" onclick="app.revealAnswer('${todaysPrashna.id}')">
-                उत्तर देखें
-              </button>
-            `;
-          }
-          localStorage.setItem('lastPrashnaDate', today);
-        })
-        .catch(err => {
-          console.log('Error loading daily prashna:', err);
+    async init() {
+        // Initialize modules
+        this.karmaViz = new KarmaVisualizer('karma-canvas');
+        this.dailyPrashna = new DailyPrashna();
+        this.achievements = new Achievements();
+        
+        // Load user progress
+        await this.loadUserProgress();
+        
+        // Setup event listeners
+        this.setupEventListeners();
+        
+        // Initialize UI
+        this.updateUI();
+        
+        // Load universes
+        this.renderUniverses();
+        
+        // Check for install prompt
+        this.setupInstallPrompt();
+        
+        // Initialize daily prashna
+        await this.dailyPrashna.loadTodaysQuestion();
+        
+        // Start karma animation
+        this.karmaViz.startAnimation();
+        
+        // Check achievements
+        this.checkAchievements();
+    }
+    
+    setupEventListeners() {
+        // Menu toggle
+        document.getElementById('menu-toggle')?.addEventListener('click', () => {
+            this.toggleMenu();
+        });
+        
+        // Menu overlay
+        document.getElementById('menu-overlay')?.addEventListener('click', () => {
+            this.closeMenu();
+        });
+        
+        // Language toggle
+        document.getElementById('lang-toggle')?.addEventListener('click', () => {
+            this.toggleLanguage();
+        });
+        
+        // Bottom navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                this.navigateToScreen(e.currentTarget.dataset.screen);
+            });
+        });
+        
+        // Daily Prashna reveal
+        document.getElementById('reveal-answer')?.addEventListener('click', () => {
+            this.revealDailyAnswer();
+        });
+        
+        // Universe cards (will be set after rendering)
+    }
+    
+    renderUniverses() {
+        const grid = document.getElementById('universe-grid');
+        if (!grid) return;
+        
+        grid.innerHTML = '';
+        
+        this.universes.forEach(universe => {
+            const card = this.createUniverseCard(universe);
+            grid.appendChild(card);
         });
     }
-  }
-  
-  revealAnswer(prashnaId) {
-    // Implementation for revealing answer
-    // Award XP, update progress, etc.
-    this.addXP(10);
-    this.achievements.unlock('daily_scholar');
-  }
-  
-  addXP(amount) {
-    this.userData.xp = (this.userData.xp || 0) + amount;
-    this.userData.level = Math.floor(this.userData.xp / 100) + 1;
     
-    // Update UI
-    this.updateXPBar();
-    
-    // Check for level up
-    if (this.userData.xp % 100 === 0) {
-      this.levelUp();
+    createUniverseCard(universe) {
+        const card = document.createElement('div');
+        card.className = `universe-card ${universe.locked ? 'locked' : 'unlocked'}`;
+        card.style.background = `linear-gradient(135deg, ${universe.color}, ${this.lightenColor(universe.color, 30)})`;
+        
+        const isLocked = universe.locked && universe.id !== 'dravyanuyoga'; // Dravyanuyoga has content
+        
+        card.innerHTML = `
+            <div class="universe-header">
+                <span class="universe-icon">${universe.icon}</span>
+                ${isLocked ? '<span class="lock-badge">🔒</span>' : ''}
+            </div>
+            <h3 class="universe-name">${universe.name[this.currentLanguage]}</h3>
+            <p class="universe-subtitle">${universe.subtitle[this.currentLanguage]}</p>
+            <p class="universe-desc">${universe.description[this.currentLanguage]}</p>
+            <div class="universe-footer">
+                <div class="progress-mini">
+                    <div class="progress-bar-mini">
+                        <div class="progress-fill-mini" style="width: ${universe.progress}%"></div>
+                    </div>
+                    <span class="progress-text">${universe.progress}%</span>
+                </div>
+                ${!isLocked ? `<button class="explore-btn">Explore →</button>` : ''}
+            </div>
+        `;
+        
+        if (!isLocked) {
+            card.addEventListener('click', () => {
+                this.openUniverse(universe);
+            });
+        } else {
+            card.addEventListener('click', () => {
+                this.showLockedMessage(universe);
+            });
+        }
+        
+        return card;
     }
     
-    // Save progress
-    this.storage.saveUserData(this.userData);
-  }
-  
-  updateXPBar() {
-    const xpBar = document.querySelector('.xp-progress');
-    if (xpBar) {
-      const percentage = (this.userData.xp % 100);
-      xpBar.style.width = `${percentage}%`;
+    openUniverse(universe) {
+        if (universe.id === 'dravyanuyoga') {
+            // Special handling for Dravyanuyoga with existing chapters
+            this.openDravyanuyogaUniverse();
+        } else {
+            // Navigate to universe view
+            this.router.navigate(`/universe/${universe.id}`);
+            this.showUniverseContent(universe);
+        }
     }
-  }
-  
-  levelUp() {
-    // Celebration animation
-    this.showAchievement({
-      title: 'Level Up! 🎉',
-      description: `You reached Level ${this.userData.level}!`,
-      icon: '⭐'
-    });
     
-    // Update Leśyā if appropriate
-    this.updateLesya();
-  }
-  
-  updateLesya() {
-    const lesyaProgression = [
-      'krishna',  // Black (worst)
-      'nila',     // Blue
-      'kapota',   // Grey
-      'tejas',    // Red
-      'padma',    // Yellow
-      'shukla'    // White (best)
-    ];
-    
-    const currentIndex = lesyaProgression.indexOf(this.userData.currentLesya);
-    const newIndex = Math.min(
-      Math.floor(this.userData.level / 10),
-      lesyaProgression.length - 1
-    );
-    
-    if (newIndex > currentIndex) {
-      this.userData.currentLesya = lesyaProgression[newIndex];
-      this.initializeSoulAvatar();
-      this.showAchievement({
-        title: 'Leśyā Transformation!',
-        description: `Your soul aura evolved to ${this.userData.currentLesya}!`,
-        icon: '🌟'
-      });
+    openDravyanuyogaUniverse() {
+        const content = `
+            <div class="universe-detail">
+                <div class="universe-banner" style="background: linear-gradient(135deg, #9370DB, #8A2BE2);">
+                    <button class="back-btn" onclick="app.navigateToScreen('home')">← Back</button>
+                    <h1>🔮 Dravyānuyoga</h1>
+                    <p>The Universe of Reality - Explore the fundamental substances</p>
+                </div>
+                
+                <div class="stages-container">
+                    <div class="stage-card">
+                        <h2>Stage 1: Eight Types of Karma</h2>
+                        <p>Understand how karma binds the soul and affects spiritual progress</p>
+                        <div class="chapter-list">
+                            <button class="chapter-btn" onclick="app.loadChapter('chapter-40')">
+                                <span class="chapter-icon">📖</span>
+                                <div>
+                                    <h3>Chapter 40: Aṣṭa Karma</h3>
+                                    <p>The Eight Types of Karma</p>
+                                </div>
+                                <span class="progress-badge">Interactive</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="stage-card">
+                        <h2>Stage 2: Subtle Passions & Soul States</h2>
+                        <p>Learn about Nokashayas and the journey of consciousness</p>
+                        <div class="chapter-list">
+                            <button class="chapter-btn" onclick="app.loadChapter('chapter-42')">
+                                <span class="chapter-icon">📖</span>
+                                <div>
+                                    <h3>Chapter 42: Nokashaya</h3>
+                                    <p>The Nine Subtle Passions</p>
+                                </div>
+                                <span class="progress-badge">Interactive</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="universe-features">
+                    <h3>🎮 Features in this Universe:</h3>
+                    <ul>
+                        <li>Interactive Karma Visualizer</li>
+                        <li>Soul State Simulator</li>
+                        <li>Dravya Sorting Game</li>
+                        <li>Tattva Builder Experience</li>
+                        <li>Real-time Leshya Color Changes</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('universe-view').innerHTML = content;
+        this.navigateToScreen('universe-view');
     }
-  }
-  
-  attachEventListeners() {
-    // Universe cards
-    document.querySelectorAll('.universe-card.unlocked').forEach(card => {
-      card.addEventListener('click', (e) => {
-        const universeId = e.currentTarget.dataset.universe;
-        this.router.navigate(`/JinaSaraswati/universe/${universeId}`);
-      });
-    });
     
-    // PWA install prompt
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      this.showInstallPrompt(deferredPrompt);
-    });
-  }
-  
-  registerPushNotifications() {
-    // Placeholder for push notifications
-    console.log('Push notifications will be registered here');
-  }
-  
-  showInstallPrompt(prompt) {
-    const installBanner = document.createElement('div');
-    installBanner.className = 'install-banner';
-    installBanner.innerHTML = `
-      <p>Install जिनसरस्वती app for offline access!</p>
-      <button onclick="app.install()">Install</button>
-      <button onclick="this.parentElement.remove()">Later</button>
-    `;
-    document.body.appendChild(installBanner);
+    loadChapter(chapterId) {
+        const chapterFrame = document.getElementById('chapter-frame');
+        chapterFrame.src = `universes/dravyanuyoga/${chapterId}.html`;
+        this.navigateToScreen('chapter-view');
+        
+        // Add XP for opening chapter
+        this.state.addXP(5);
+        this.updateUI();
+    }
     
-    this.deferredPrompt = prompt;
-  }
-  
-  async install() {
-    if (this.deferredPrompt) {
-      this.deferredPrompt.prompt();
-      const { outcome } = await this.deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        this.achievements.unlock('app_installed');
-      }
-      this.deferredPrompt = null;
+    showUniverseContent(universe) {
+        // Implementation for other universes
+        const view = document.getElementById('universe-view');
+        view.innerHTML = `
+            <div class="universe-detail">
+                <button class="back-btn" onclick="app.navigateToScreen('home')">← Back</button>
+                <h1>${universe.icon} ${universe.name[this.currentLanguage]}</h1>
+                <p>${universe.description[this.currentLanguage]}</p>
+                <div class="coming-soon">
+                    <h2>Coming Soon!</h2>
+                    <p>This universe is under development. Check back later!</p>
+                </div>
+            </div>
+        `;
+        this.navigateToScreen('universe-view');
     }
-  }
-  
-  showAchievement(achievement) {
-    const popup = document.getElementById('achievement-popup');
-    if (popup) {
-      popup.innerHTML = `
-        <div class="achievement-content">
-          <span class="achievement-icon">${achievement.icon}</span>
-          <div>
-            <h4>${achievement.title}</h4>
-            <p>${achievement.description}</p>
-          </div>
-        </div>
-      `;
-      popup.classList.remove('hidden');
-      popup.classList.add('show');
-      
-      setTimeout(() => {
-        popup.classList.remove('show');
-        popup.classList.add('hidden');
-      }, 3000);
+    
+    showLockedMessage(universe) {
+        this.showAchievement('Locked Universe', `Complete previous universes to unlock ${universe.name[this.currentLanguage]}`, '🔒');
     }
-  }
+    
+    navigateToScreen(screenName) {
+        // Hide all screens
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.style.display = 'none';
+            screen.classList.remove('active');
+        });
+        
+        // Show selected screen
+        const targetScreen = document.getElementById(`${screenName}-screen`) || 
+                           document.getElementById(screenName.replace('-screen', '-view'));
+        if (targetScreen) {
+            targetScreen.style.display = 'block';
+            targetScreen.classList.add('active');
+        }
+        
+        // Update nav
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+            if (item.dataset.screen === screenName.replace('-screen', '')) {
+                item.classList.add('active');
+            }
+        });
+    }
+    
+    toggleMenu() {
+        const menu = document.getElementById('side-menu');
+        const overlay = document.getElementById('menu-overlay');
+        menu.classList.toggle('open');
+        overlay.classList.toggle('visible');
+    }
+    
+    closeMenu() {
+        const menu = document.getElementById('side-menu');
+        const overlay = document.getElementById('menu-overlay');
+        menu.classList.remove('open');
+        overlay.classList.remove('visible');
+    }
+    
+    toggleLanguage() {
+        this.currentLanguage = this.currentLanguage === 'en' ? 'hi' : 'en';
+        localStorage.setItem('language', this.currentLanguage);
+        document.getElementById('current-lang').textContent = this.currentLanguage.toUpperCase();
+        this.renderUniverses();
+        this.updateUI();
+    }
+    
+    async revealDailyAnswer() {
+        const answerContainer = document.getElementById('answer-container');
+        const revealBtn = document.getElementById('reveal-answer');
+        
+        answerContainer.style.display = 'block';
+        revealBtn.style.display = 'none';
+        
+        // Award XP
+        this.state.addXP(10);
+        this.updateUI();
+        
+        // Show achievement
+        this.showAchievement('Daily Wisdom', 'You earned 10 XP!', '📜');
+        
+        // Update streak
+        this.state.updateStreak();
+    }
+    
+    updateUI() {
+        // Update XP display
+        document.getElementById('user-xp').textContent = this.state.user.xp;
+        
+        // Update level
+        document.getElementById('user-level').textContent = this.state.user.level;
+        
+        // Update progress bar
+        const progress = (this.state.user.xp % 100);
+        document.getElementById('progress-fill').style.width = `${progress}%`;
+        
+        // Update streak
+        document.getElementById('streak-count').textContent = this.state.user.streak;
+        
+        // Update stats
+        document.getElementById('total-chapters').textContent = this.state.user.completedChapters.length;
+        document.getElementById('total-badges').textContent = this.state.user.achievements.length;
+        document.getElementById('karma-score').textContent = this.state.user.karmaScore || 0;
+    }
+    
+    async loadUserProgress() {
+        // Load from localStorage
+        const saved = localStorage.getItem('jinasaraswati_progress');
+        if (saved) {
+            const data = JSON.parse(saved);
+            this.state.user = { ...this.state.user, ...data };
+        }
+    }
+    
+    checkAchievements() {
+        // Check for various achievements
+        if (this.state.user.streak >= 7 && !this.state.hasAchievement('week_warrior')) {
+            this.achievements.unlock('week_warrior');
+            this.showAchievement('Week Warrior', '7 day streak achieved!', '🔥');
+        }
+        
+        if (this.state.user.level >= 5 && !this.state.hasAchievement('level_5')) {
+            this.achievements.unlock('level_5');
+            this.showAchievement('Rising Seeker', 'Reached Level 5!', '⭐');
+        }
+    }
+    
+    showAchievement(title, description, icon = '🏆') {
+        const popup = document.getElementById('achievement-popup');
+        document.getElementById('achievement-title').textContent = title;
+        document.getElementById('achievement-desc').textContent = description;
+        document.querySelector('.achievement-icon').textContent = icon;
+        
+        popup.classList.add('show');
+        setTimeout(() => {
+            popup.classList.remove('show');
+        }, 3000);
+    }
+    
+    setupInstallPrompt() {
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install prompt after 30 seconds
+            setTimeout(() => {
+                document.getElementById('install-prompt').style.display = 'block';
+            }, 30000);
+        });
+        
+        document.getElementById('install-now')?.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    this.showAchievement('App Installed', 'Welcome to the full experience!', '📱');
+                }
+                deferredPrompt = null;
+            }
+            document.getElementById('install-prompt').style.display = 'none';
+        });
+        
+        document.getElementById('install-later')?.addEventListener('click', () => {
+            document.getElementById('install-prompt').style.display = 'none';
+        });
+    }
+    
+    lightenColor(color, percent) {
+        const num = parseInt(color.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) + amt;
+        const G = (num >> 8 & 0x00FF) + amt;
+        const B = (num & 0x0000FF) + amt;
+        return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+            (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+            (B < 255 ? B < 1 ? 0 : B : 255))
+            .toString(16).slice(1);
+    }
 }
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  window.app = new JinasaraswatiApp();
+    window.app = new JinaSaraswatiApp();
 });
+
+// Export for modules
+export default JinaSaraswatiApp;
