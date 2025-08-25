@@ -1,22 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>JinaSaraswati - Learn Jainism Interactively</title>
+    <title>जिनसरस्वती - जैन धर्म सीखें</title>
     
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#8B4513">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;900&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* Reset & Base */
+        /* ============ VARIABLES & RESET ============ */
+        :root {
+            --primary: #8B4513;
+            --primary-glow: #FF8C00;
+            --gold: #FFD700;
+            --gold-light: #FFF8DC;
+            --purple: #9370DB;
+            --green: #228B22;
+            --blue: #4682B4;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --shadow-soft: 0 10px 40px rgba(0,0,0,0.08);
+            --shadow-glow: 0 0 50px rgba(255,215,0,0.3);
+            --shadow-premium: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -24,19 +40,78 @@
         }
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #FFF8DC 0%, #F5E6D3 100%);
-            color: #333;
+            font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
+            position: relative;
         }
         
-        /* Header */
+        /* ============ ANIMATED BACKGROUND ============ */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 25%, #7e22ce 75%, #581c87 100%);
+            background-size: 400% 400%;
+            animation: cosmicFlow 20s ease infinite;
+            z-index: -2;
+        }
+        
+        @keyframes cosmicFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) translateX(10px) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) translateX(-10px) scale(1);
+            }
+        }
+        
+        /* ============ GLASSMORPHISM HEADER ============ */
         .app-header {
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            color: white;
+            background: rgba(139, 69, 19, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
             padding: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
         
         .header-content {
@@ -47,249 +122,505 @@
             margin: 0 auto;
         }
         
-        .app-title {
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .om-symbol {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(255,215,0,0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255,215,0,0.8); }
+        }
+        
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         
         .xp-display {
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,140,0,0.2));
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255,215,0,0.3);
             font-weight: 600;
-        }
-        
-        /* Progress Bar */
-        .global-progress {
-            background: #F5E6D3;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #E0D4B8;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 0.5rem;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #DAA520 0%, #FFD700 100%);
-            width: 10%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-        
-        .level-info {
             display: flex;
-            justify-content: space-between;
-            font-size: 0.875rem;
-            color: #666;
-            font-weight: 600;
+            align-items: center;
+            gap: 0.5rem;
+            animation: glowPulse 3s infinite;
         }
         
-        /* Main Content */
-        .main-content {
-            padding: 1.5rem;
-            padding-bottom: 80px;
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+            50% { box-shadow: 0 0 30px rgba(255,215,0,0.5); }
+        }
+        
+        /* ============ PREMIUM PROGRESS BAR ============ */
+        .progress-section {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+        }
+        
+        .progress-container {
             max-width: 1200px;
             margin: 0 auto;
         }
         
-        /* Daily Prashna Card */
-        .daily-prashna-card {
-            background: linear-gradient(135deg, rgba(218,165,32,0.1) 0%, rgba(255,215,0,0.1) 100%);
-            border: 2px solid #DAA520;
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            animation: bounce 2s infinite;
         }
         
-        .card-header {
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500, #FF6347);
+            border-radius: 50px;
+            width: 25%;
+            position: relative;
+            animation: progressShine 2s linear infinite;
+        }
+        
+        @keyframes progressShine {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+            100% { filter: brightness(1); }
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 2s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .streak-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255,215,0,0.8);
+        }
+        
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+        
+        /* ============ FLOATING DAILY PRASHNA CARD ============ */
+        .prashna-card {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,140,0,0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: floatCard 3s ease-in-out infinite;
+            box-shadow: 0 20px 60px rgba(255,215,0,0.2);
+        }
+        
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .prashna-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .prashna-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .card-header h2 {
-            font-size: 1.25rem;
-            color: #8B4513;
-        }
-        
-        .xp-badge {
-            background: #228B22;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-        
-        .prashna-content {
-            text-align: center;
-        }
-        
-        .question {
-            font-size: 1.1rem;
-            color: #333;
             margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .prashna-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .xp-reward {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            animation: sparkle 1s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
             line-height: 1.8;
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
             font-style: italic;
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            color: white;
+        .reveal-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
             border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+            display: block;
+            margin: 0 auto;
         }
         
-        .btn-primary:hover {
+        .reveal-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 40px rgba(255,215,0,0.4);
         }
         
-        .answer-container {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(34,139,34,0.1);
+        .reveal-btn:active {
+            transform: translateY(0);
+        }
+        
+        .answer-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(34,197,94,0.1);
+            border-left: 4px solid #22C55E;
             border-radius: 12px;
-            border-left: 4px solid #228B22;
             display: none;
+            animation: slideIn 0.5s ease;
+            position: relative;
+            z-index: 1;
         }
         
-        .answer {
-            color: #333;
-            line-height: 1.5;
-            font-weight: 500;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        /* Universe Section */
-        .section-title {
-            font-size: 1.5rem;
-            color: #8B4513;
-            margin-bottom: 1.5rem;
+        /* ============ UNIVERSE CARDS ============ */
+        .universes-title {
+            font-size: 2rem;
+            font-weight: 900;
             text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .universe-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
         
         .universe-card {
-            border-radius: 16px;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 24px;
+            padding: 2rem;
             position: relative;
             overflow: hidden;
-            color: white;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
-        .universe-card:hover:not(.locked) {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        .universe-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            filter: brightness(1.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .universe-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+        
+        .universe-card:hover::before {
+            opacity: 1;
         }
         
         .universe-card.locked {
-            opacity: 0.7;
+            opacity: 0.6;
             cursor: not-allowed;
         }
         
+        .universe-card.locked:hover {
+            transform: none;
+        }
+        
+        .universe-1 {
+            background: linear-gradient(135deg, #FF6B6B, #C92A2A);
+        }
+        
+        .universe-2 {
+            background: linear-gradient(135deg, #4ECDC4, #44A3AA);
+        }
+        
+        .universe-3 {
+            background: linear-gradient(135deg, #95E77E, #4CAF50);
+        }
+        
+        .universe-4 {
+            background: linear-gradient(135deg, #A78BFA, #7C3AED);
+        }
+        
         .universe-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
         }
         
         .universe-name {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         .universe-subtitle {
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             opacity: 0.9;
-            margin-bottom: 0.5rem;
-        }
-        
-        .universe-desc {
-            font-size: 0.875rem;
-            opacity: 0.8;
-            line-height: 1.5;
             margin-bottom: 1rem;
         }
         
-        .universe-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .universe-desc {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            opacity: 0.85;
+            margin-bottom: 1.5rem;
         }
         
-        .lock-badge {
+        .universe-progress {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 50px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .universe-progress-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50px;
+            transition: width 0.5s;
+        }
+        
+        .lock-icon {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 1.5rem;
+            right: 1.5rem;
             font-size: 1.5rem;
             opacity: 0.5;
         }
         
-        /* Stats Card */
-        .stats-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        .unlock-hint {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            font-style: italic;
         }
         
-        .stats-card h3 {
-            color: #8B4513;
-            margin-bottom: 1rem;
+        /* ============ STATS DASHBOARD ============ */
+        .stats-dashboard {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #FFD700;
         }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
         
         .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #8B4513;
-            display: block;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .stat-label {
-            font-size: 0.875rem;
-            color: #666;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
         }
         
-        /* Bottom Navigation */
+        /* ============ FLOATING ACTION BUTTON ============ */
+        .fab-menu {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 999;
+        }
+        
+        .fab-main {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            color: #000;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+            transition: all 0.3s;
+            animation: fabPulse 2s infinite;
+        }
+        
+        @keyframes fabPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+        }
+        
+        .fab-main:hover {
+            transform: scale(1.1);
+        }
+        
+        /* ============ BOTTOM NAVIGATION ============ */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
-            border-top: 1px solid #E0D4B8;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,215,0,0.2);
+            padding: 0.5rem 0;
             display: flex;
             justify-content: space-around;
-            padding: 0.5rem 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 998;
         }
         
         .nav-item {
@@ -301,13 +632,32 @@
             padding: 0.5rem;
             background: none;
             border: none;
-            color: #666;
+            color: rgba(255,255,255,0.5);
             cursor: pointer;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            position: relative;
         }
         
         .nav-item.active {
-            color: #8B4513;
+            color: #FFD700;
+        }
+        
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 2px;
+            animation: navGlow 1s infinite;
+        }
+        
+        @keyframes navGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+            50% { box-shadow: 0 0 20px rgba(255,215,0,0.8); }
         }
         
         .nav-icon {
@@ -319,16 +669,123 @@
             font-weight: 600;
         }
         
-        /* Universe Detail View */
+        /* ============ CHAPTER VIEW ============ */
+        .chapter-view {
+            display: none;
+            padding: 2rem;
+        }
+        
+        .chapter-header {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,140,0,0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(-5px);
+        }
+        
+        .chapter-frame {
+            width: 100%;
+            height: calc(100vh - 200px);
+            border: none;
+            border-radius: 16px;
+            background: #fff;
+        }
+        
+        /* ============ LOADING ANIMATION ============ */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,215,0,0.2);
+            border-top-color: #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ============ ACHIEVEMENT POPUP ============ */
+        .achievement-popup {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(255,215,0,0.95), rgba(255,140,0,0.95));
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-radius: 50px;
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 20px 60px rgba(255,215,0,0.4);
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 9999;
+        }
+        
+        .achievement-popup.show {
+            top: 20px;
+        }
+        
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .universe-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .app-title {
+                font-size: 1.3rem;
+            }
+            
+            .universes-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* ============ SPECIAL EFFECTS ============ */
+        .glow-text {
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+        
         .screen {
             display: none;
         }
         
         .screen.active {
             display: block;
-        }
-        
-        .universe-detail {
             animation: fadeIn 0.5s ease;
         }
         
@@ -336,103 +793,38 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        
-        .universe-banner {
-            padding: 2rem;
-            color: white;
-            border-radius: 16px;
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-        
-        .back-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid white;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        
-        .stage-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
-        }
-        
-        .chapter-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: #F5E6D3;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-            text-align: left;
-            margin-top: 1rem;
-        }
-        
-        .chapter-btn:hover {
-            background: #E0D4B8;
-        }
-        
-        .chapter-icon {
-            font-size: 2rem;
-        }
-        
-        .progress-badge {
-            margin-left: auto;
-            background: #228B22;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .chapter-frame {
-            width: 100%;
-            height: calc(100vh - 60px);
-            border: none;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .universe-grid {
-                grid-template-columns: 1fr;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- Animated Background -->
+    <div class="cosmic-bg"></div>
+    <div class="particles" id="particles"></div>
+    
+    <!-- Premium Header -->
     <header class="app-header">
         <div class="header-content">
-            <h1 class="app-title">JinaSaraswati</h1>
+            <div class="logo-section">
+                <div class="om-symbol">ॐ</div>
+                <h1 class="app-title">जिनसरस्वती</h1>
+            </div>
             <div class="xp-display">
-                ⭐ <span id="user-xp">0</span> XP
+                <span style="font-size: 1.2rem;">✨</span>
+                <span id="user-xp">0</span> अंक
             </div>
         </div>
     </header>
     
-    <!-- Progress Bar -->
-    <div class="global-progress">
-        <div class="progress-bar">
-            <div id="progress-fill" class="progress-fill"></div>
-        </div>
-        <div class="level-info">
-            <span>Level <span id="user-level">1</span></span>
-            <span><span id="streak-count">0</span> day streak 🔥</span>
+    <!-- Progress Section -->
+    <div class="progress-section">
+        <div class="progress-container">
+            <span class="level-badge">स्तर <span id="user-level">1</span> 🏆</span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="streak-info">
+                <span>🔥 <span id="streak">0</span> दिन की निरंतरता</span>
+                <span>अगला स्तर: <span id="next-level-xp">100</span> अंक</span>
+            </div>
         </div>
     </div>
     
@@ -441,330 +833,483 @@
         <!-- Home Screen -->
         <div id="home-screen" class="screen active">
             <!-- Daily Prashna Card -->
-            <div class="daily-prashna-card">
-                <div class="card-header">
-                    <h2>📜 Daily Prashna</h2>
-                    <span class="xp-badge">+10 XP</span>
+            <div class="prashna-card">
+                <div class="prashna-header">
+                    <h2 class="prashna-title">
+                        <span>📿</span>
+                        आज का प्रश्न
+                    </h2>
+                    <span class="xp-reward">+10 अंक</span>
                 </div>
-                <div class="prashna-content">
-                    <p id="daily-question" class="question">Loading today's wisdom...</p>
-                    <button id="reveal-answer" class="btn-primary" onclick="revealAnswer()">Reveal Answer</button>
-                    <div id="answer-container" class="answer-container">
-                        <p id="daily-answer" class="answer"></p>
-                    </div>
+                <p class="question-text" id="daily-question">
+                    जैन धर्म के पांच मुख्य व्रत कौन से हैं?
+                </p>
+                <button class="reveal-btn" id="reveal-btn" onclick="revealAnswer()">
+                    उत्तर देखें
+                </button>
+                <div class="answer-box" id="answer-box">
+                    <p id="daily-answer">
+                        अहिंसा (अहिंसा), सत्य (सच), अस्तेय (चोरी न करना), ब्रह्मचर्य (ब्रह्मचर्य), अपरिग्रह (अनासक्ति)
+                    </p>
                 </div>
             </div>
             
-            <!-- Universe Grid -->
-            <h2 class="section-title">Four Universes of Knowledge</h2>
-            <div id="universe-grid" class="universe-grid">
-                <!-- Universes will be added here by JavaScript -->
+            <!-- Universe Cards -->
+            <h2 class="universes-title">ज्ञान के चार ब्रह्मांड</h2>
+            <div class="universe-grid" id="universe-grid">
+                <!-- Cards will be added by JavaScript -->
             </div>
             
-            <!-- Stats Card -->
-            <div class="stats-card">
-                <h3>Your Journey</h3>
+            <!-- Stats Dashboard -->
+            <div class="stats-dashboard">
+                <h3 class="stats-title">आपकी आध्यात्मिक यात्रा 🌟</h3>
                 <div class="stats-grid">
-                    <div>
-                        <span class="stat-value" id="total-chapters">0</span>
-                        <span class="stat-label">Chapters Completed</span>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-value" id="chapters-completed">0</div>
+                        <div class="stat-label">अध्याय पूर्ण</div>
                     </div>
-                    <div>
-                        <span class="stat-value" id="total-badges">0</span>
-                        <span class="stat-label">Badges Earned</span>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏅</div>
+                        <div class="stat-value" id="badges-earned">0</div>
+                        <div class="stat-label">बैज अर्जित</div>
                     </div>
-                    <div>
-                        <span class="stat-value" id="karma-score">0</span>
-                        <span class="stat-label">Karma Points</span>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-value" id="karma-points">0</div>
+                        <div class="stat-label">कर्म अंक</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-value" id="accuracy">0%</div>
+                        <div class="stat-label">सटीकता</div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Universe View -->
-        <div id="universe-view" class="screen">
+        <!-- Universe Detail Screen -->
+        <div id="universe-screen" class="screen">
             <!-- Content will be added dynamically -->
         </div>
         
-        <!-- Chapter View -->
-        <div id="chapter-view" class="screen">
+        <!-- Chapter View Screen -->
+        <div id="chapter-screen" class="screen">
+            <button class="back-btn" onclick="goBack()">
+                ← वापस जाएं
+            </button>
             <iframe id="chapter-frame" class="chapter-frame"></iframe>
         </div>
     </main>
     
+    <!-- Floating Action Button -->
+    <div class="fab-menu">
+        <button class="fab-main" onclick="toggleFab()">
+            ✨
+        </button>
+    </div>
+    
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="navigateToScreen('home')">
+        <button class="nav-item active" onclick="navigateTo('home')">
             <span class="nav-icon">🏠</span>
-            <span class="nav-label">Home</span>
+            <span class="nav-label">मुख्य</span>
         </button>
-        <button class="nav-item" onclick="navigateToScreen('explore')">
+        <button class="nav-item" onclick="navigateTo('explore')">
             <span class="nav-icon">🔍</span>
-            <span class="nav-label">Explore</span>
+            <span class="nav-label">खोजें</span>
         </button>
-        <button class="nav-item" onclick="navigateToScreen('badges')">
-            <span class="nav-icon">🏆</span>
-            <span class="nav-label">Badges</span>
+        <button class="nav-item" onclick="navigateTo('library')">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label">पुस्तकालय</span>
         </button>
-        <button class="nav-item" onclick="navigateToScreen('profile')">
+        <button class="nav-item" onclick="navigateTo('profile')">
             <span class="nav-icon">👤</span>
-            <span class="nav-label">Profile</span>
+            <span class="nav-label">प्रोफ़ाइल</span>
         </button>
     </nav>
     
+    <!-- Achievement Popup -->
+    <div class="achievement-popup" id="achievement">
+        <span id="achievement-text">🎉 स्तर वृद्धि!</span>
+    </div>
+    
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+    
     <script>
-        // Global state
-        let userState = {
+        // ============ APP STATE ============
+        let appState = {
             level: 1,
             xp: 0,
             streak: 0,
-            completedChapters: [],
-            achievements: [],
-            karmaScore: 0
+            chaptersCompleted: [],
+            badges: [],
+            karmaPoints: 0,
+            currentScreen: 'home'
         };
         
-        // Universes data
+        // ============ UNIVERSE DATA ============
         const universes = [
             {
                 id: 'prathamanuyoga',
-                name: 'Prathamānuyoga',
-                subtitle: 'Universe of Narratives',
-                description: 'Learn through stories of Tīrthaṅkaras',
-                color: 'linear-gradient(135deg, #8B4513, #A0522D)',
-                icon: '📚',
+                name: 'प्रथमानुयोग',
+                subtitle: 'कथाओं का ब्रह्मांड',
+                description: 'तीर्थंकरों की कथाओं के माध्यम से सीखें',
+                icon: '📖',
+                color: 'universe-1',
                 locked: false,
-                progress: 0
+                progress: 15
             },
             {
                 id: 'karananuyoga',
-                name: 'Karaṇānuyoga',
-                subtitle: 'Universe of Cosmology',
-                description: 'Explore Jain geography & cosmos',
-                color: 'linear-gradient(135deg, #4682B4, #5F9EA0)',
+                name: 'करणानुयोग',
+                subtitle: 'ब्रह्मांड विज्ञान',
+                description: 'जैन भूगोल और ब्रह्मांड का अन्वेषण करें',
                 icon: '🌌',
+                color: 'universe-2',
                 locked: true,
                 progress: 0
             },
             {
                 id: 'charananuyoga',
-                name: 'Charaṇānuyoga',
-                subtitle: 'Universe of Conduct',
-                description: 'Ethics for householders',
-                color: 'linear-gradient(135deg, #228B22, #32CD32)',
+                name: 'चरणानुयोग',
+                subtitle: 'आचरण का ब्रह्मांड',
+                description: 'गृहस्थों के लिए नैतिक सिद्धांत',
                 icon: '⚖️',
+                color: 'universe-3',
                 locked: true,
                 progress: 0
             },
             {
                 id: 'dravyanuyoga',
-                name: 'Dravyānuyoga',
-                subtitle: 'Universe of Reality',
-                description: 'Fundamental substances & metaphysics',
-                color: 'linear-gradient(135deg, #9370DB, #8A2BE2)',
-                icon: '🔮',
+                name: 'द्रव्यानुयोग',
+                subtitle: 'तत्त्व का ब्रह्मांड',
+                description: 'मौलिक द्रव्य और तत्त्वमीमांसा की समझ',
+                icon: '💎',
+                color: 'universe-4',
                 locked: false,
-                progress: 25
+                progress: 35
             }
         ];
         
-        // Daily questions
+        // ============ DAILY QUESTIONS ============
         const dailyQuestions = [
             {
-                question: "What are the five main vows (Pancha Mahavrata) of Jainism?",
-                answer: "Ahimsa (non-violence), Satya (truth), Asteya (non-stealing), Brahmacharya (celibacy), Aparigraha (non-possessiveness)"
+                q: "जैन धर्म के पांच मुख्य व्रत कौन से हैं?",
+                a: "अहिंसा (अहिंसा), सत्य (सच), अस्तेय (चोरी न करना), ब्रह्मचर्य (ब्रह्मचर्य), अपरिग्रह (अनासक्ति)"
             },
             {
-                question: "Who was the first Tirthankara?",
-                answer: "Lord Rishabhadeva (Adinath) - He taught humanity the arts of civilization including writing, agriculture, and crafts"
+                q: "प्रथम तीर्थंकर कौन थे?",
+                a: "भगवान ऋषभदेव (आदिनाथ) - उन्होंने मानवता को सभ्यता की कलाएं सिखाईं"
             },
             {
-                question: "What does 'Jina' mean?",
-                answer: "Conqueror - one who has conquered inner enemies like anger, greed, ego, and attachment"
+                q: "'जिन' का क्या अर्थ है?",
+                a: "विजेता - जिसने क्रोध, लोभ, अहंकार और मोह जैसे आंतरिक शत्रुओं पर विजय प्राप्त की हो"
             },
             {
-                question: "What are the eight types of karma in Jainism?",
-                answer: "Jnanavarana, Darshanavarana, Vedaniya, Mohaniya, Ayu, Nama, Gotra, and Antaraya"
+                q: "आठ प्रकार के कर्म कौन से हैं?",
+                a: "ज्ञानावरण, दर्शनावरण, वेदनीय, मोहनीय, आयु, नाम, गोत्र और अंतराय"
             },
             {
-                question: "What is the significance of Namokara Mantra?",
-                answer: "It is the most fundamental prayer in Jainism, paying homage to the five supreme beings (Panch Parmeshthi)"
+                q: "णमोकार मंत्र का क्या महत्व है?",
+                a: "यह जैन धर्म की सबसे मौलिक प्रार्थना है, जो पांच परमेष्ठियों को नमन करती है"
+            },
+            {
+                q: "नव तत्त्व क्या हैं?",
+                a: "जीव, अजीव, आस्रव, बंध, संवर, निर्जरा, मोक्ष, पुण्य और पाप"
+            },
+            {
+                q: "चार गति कौन सी हैं?",
+                a: "नरक गति, तिर्यंच गति, मनुष्य गति और देव गति"
             }
         ];
         
-        // Initialize app
+        // ============ INITIALIZE APP ============
         function init() {
-            loadUserState();
+            loadState();
+            createParticles();
             renderUniverses();
             loadDailyQuestion();
             updateUI();
+            startAnimations();
         }
         
-        // Load user state from localStorage
-        function loadUserState() {
-            const saved = localStorage.getItem('jinasaraswati_state');
-            if (saved) {
-                userState = JSON.parse(saved);
+        // ============ PARTICLES EFFECT ============
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
             }
         }
         
-        // Save user state
-        function saveUserState() {
-            localStorage.setItem('jinasaraswati_state', JSON.stringify(userState));
-        }
-        
-        // Render universe cards
+        // ============ RENDER UNIVERSES ============
         function renderUniverses() {
             const grid = document.getElementById('universe-grid');
             grid.innerHTML = '';
             
             universes.forEach(universe => {
                 const card = document.createElement('div');
-                card.className = `universe-card ${universe.locked ? 'locked' : ''}`;
-                card.style.background = universe.color;
+                card.className = `universe-card ${universe.color} ${universe.locked ? 'locked' : ''}`;
                 
                 card.innerHTML = `
-                    ${universe.locked ? '<span class="lock-badge">🔒</span>' : ''}
+                    ${universe.locked ? '<span class="lock-icon">🔒</span>' : ''}
                     <div class="universe-icon">${universe.icon}</div>
                     <h3 class="universe-name">${universe.name}</h3>
                     <p class="universe-subtitle">${universe.subtitle}</p>
                     <p class="universe-desc">${universe.description}</p>
-                    <div class="universe-footer">
-                        <span style="opacity: 0.8">Progress: ${universe.progress}%</span>
+                    <div class="universe-progress">
+                        <div class="universe-progress-fill" style="width: ${universe.progress}%"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.9rem; opacity: 0.8;">प्रगति: ${universe.progress}%</span>
+                        ${universe.locked ? '<span class="unlock-hint">स्तर 5 पर खुलेगा</span>' : ''}
                     </div>
                 `;
                 
                 if (!universe.locked) {
                     card.onclick = () => openUniverse(universe);
+                } else {
+                    card.onclick = () => showAchievement('🔒 यह ब्रह्मांड अभी बंद है');
                 }
                 
                 grid.appendChild(card);
             });
         }
         
-        // Open universe
+        // ============ OPEN UNIVERSE ============
         function openUniverse(universe) {
             if (universe.id === 'dravyanuyoga') {
                 const content = `
-                    <div class="universe-detail">
-                        <button class="back-btn" onclick="navigateToScreen('home')">← Back</button>
-                        <div class="universe-banner" style="background: ${universe.color};">
-                            <h1>${universe.icon} ${universe.name}</h1>
-                            <p>${universe.description}</p>
+                    <div style="padding: 2rem;">
+                        <button class="back-btn" onclick="navigateTo('home')">
+                            ← वापस जाएं
+                        </button>
+                        <div style="background: linear-gradient(135deg, #A78BFA, #7C3AED); padding: 2rem; border-radius: 16px; margin-bottom: 2rem;">
+                            <h1 style="font-size: 2rem; margin-bottom: 1rem;">💎 ${universe.name}</h1>
+                            <p style="font-size: 1.1rem; opacity: 0.9;">${universe.description}</p>
                         </div>
                         
-                        <div class="stage-card">
-                            <h2>Stage 1: Eight Types of Karma</h2>
-                            <p>Understand how karma binds the soul and affects spiritual progress</p>
-                            <button class="chapter-btn" onclick="loadChapter('chapter-40')">
-                                <span class="chapter-icon">📖</span>
-                                <div>
-                                    <h3>Chapter 40: Aṣṭa Karma</h3>
-                                    <p>The Eight Types of Karma</p>
-                                </div>
-                                <span class="progress-badge">Interactive</span>
+                        <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                            <h2 style="color: #FFD700; margin-bottom: 1rem;">चरण 1: आठ प्रकार के कर्म</h2>
+                            <p style="margin-bottom: 1rem; opacity: 0.9;">समझें कि कर्म कैसे आत्मा को बांधता है और आध्यात्मिक प्रगति को प्रभावित करता है</p>
+                            <button class="reveal-btn" style="width: 100%;" onclick="loadChapter('chapter-40')">
+                                📖 अध्याय 40: अष्ट कर्म खोलें
                             </button>
                         </div>
                         
-                        <div class="stage-card">
-                            <h2>Stage 2: Subtle Passions & Soul States</h2>
-                            <p>Learn about Nokashayas and the journey of consciousness</p>
-                            <button class="chapter-btn" onclick="loadChapter('chapter-42')">
-                                <span class="chapter-icon">📖</span>
-                                <div>
-                                    <h3>Chapter 42: Nokashaya</h3>
-                                    <p>The Nine Subtle Passions</p>
-                                </div>
-                                <span class="progress-badge">Interactive</span>
+                        <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem;">
+                            <h2 style="color: #FFD700; margin-bottom: 1rem;">चरण 2: नोकषाय और आत्मा की अवस्थाएं</h2>
+                            <p style="margin-bottom: 1rem; opacity: 0.9;">नौ सूक्ष्म कषायों और चेतना की यात्रा के बारे में जानें</p>
+                            <button class="reveal-btn" style="width: 100%;" onclick="loadChapter('chapter-42')">
+                                📖 अध्याय 42: नोकषाय खोलें
                             </button>
                         </div>
                     </div>
                 `;
                 
-                document.getElementById('universe-view').innerHTML = content;
-                navigateToScreen('universe-view');
+                document.getElementById('universe-screen').innerHTML = content;
+                navigateTo('universe');
             } else {
-                alert(`${universe.name} is coming soon!`);
+                showAchievement('🚧 जल्द ही आ रहा है!');
             }
         }
         
-        // Load chapter
+        // ============ LOAD CHAPTER ============
         function loadChapter(chapterId) {
+            showLoading();
             const frame = document.getElementById('chapter-frame');
             frame.src = `universes/dravyanuyoga/${chapterId}.html`;
-            navigateToScreen('chapter-view');
-            addXP(5);
+            
+            setTimeout(() => {
+                hideLoading();
+                navigateTo('chapter');
+                addXP(5);
+                showAchievement('📖 अध्याय खोला गया! +5 अंक');
+            }, 1000);
         }
         
-        // Navigate between screens
-        function navigateToScreen(screenName) {
-            // Hide all screens
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
+        // ============ NAVIGATION ============
+        function navigateTo(screen) {
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active');
             });
             
-            // Show selected screen
-            const targetScreen = document.getElementById(`${screenName}-screen`) || 
-                               document.getElementById(`${screenName}-view`);
-            if (targetScreen) {
-                targetScreen.classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => {
+                n.classList.remove('active');
+            });
+            
+            if (screen === 'home') {
+                document.getElementById('home-screen').classList.add('active');
+                document.querySelector('.nav-item').classList.add('active');
+            } else if (screen === 'universe') {
+                document.getElementById('universe-screen').classList.add('active');
+            } else if (screen === 'chapter') {
+                document.getElementById('chapter-screen').classList.add('active');
             }
             
-            // Update nav
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
+            appState.currentScreen = screen;
         }
         
-        // Load daily question
+        function goBack() {
+            if (appState.currentScreen === 'chapter') {
+                navigateTo('universe');
+            } else {
+                navigateTo('home');
+            }
+        }
+        
+        // ============ DAILY QUESTION ============
         function loadDailyQuestion() {
             const today = new Date().toDateString();
             const index = today.length % dailyQuestions.length;
-            const q = dailyQuestions[index];
+            const question = dailyQuestions[index];
             
-            document.getElementById('daily-question').textContent = q.question;
-            document.getElementById('daily-answer').textContent = q.answer;
+            document.getElementById('daily-question').textContent = question.q;
+            document.getElementById('daily-answer').textContent = question.a;
         }
         
-        // Reveal answer
         function revealAnswer() {
-            document.getElementById('answer-container').style.display = 'block';
-            document.getElementById('reveal-answer').style.display = 'none';
+            document.getElementById('answer-box').style.display = 'block';
+            document.getElementById('reveal-btn').style.display = 'none';
             addXP(10);
+            showAchievement('✨ उत्तर सही! +10 अंक');
+            
+            // Trigger confetti effect
+            createConfetti();
         }
         
-        // Add XP
+        // ============ XP & LEVELING ============
         function addXP(amount) {
-            userState.xp += amount;
-            const newLevel = Math.floor(userState.xp / 100) + 1;
-            if (newLevel > userState.level) {
-                userState.level = newLevel;
-                alert(`🎉 Level Up! You reached Level ${newLevel}!`);
+            appState.xp += amount;
+            
+            // Check for level up
+            const newLevel = Math.floor(appState.xp / 100) + 1;
+            if (newLevel > appState.level) {
+                appState.level = newLevel;
+                showAchievement(`🎉 स्तर ${newLevel} प्राप्त! नई उपलब्धि अनलॉक!`);
+                
+                // Unlock universes at certain levels
+                if (newLevel === 5) {
+                    universes[1].locked = false;
+                    renderUniverses();
+                    showAchievement('🌌 करणानुयोग ब्रह्मांड खुल गया!');
+                }
             }
-            saveUserState();
+            
+            saveState();
             updateUI();
         }
         
-        // Update UI
+        // ============ UPDATE UI ============
         function updateUI() {
-            document.getElementById('user-xp').textContent = userState.xp;
-            document.getElementById('user-level').textContent = userState.level;
-            document.getElementById('streak-count').textContent = userState.streak;
-            document.getElementById('total-chapters').textContent = userState.completedChapters.length;
-            document.getElementById('total-badges').textContent = userState.achievements.length;
-            document.getElementById('karma-score').textContent = userState.karmaScore;
+            document.getElementById('user-xp').textContent = appState.xp;
+            document.getElementById('user-level').textContent = appState.level;
+            document.getElementById('streak').textContent = appState.streak;
+            document.getElementById('chapters-completed').textContent = appState.chaptersCompleted.length;
+            document.getElementById('badges-earned').textContent = appState.badges.length;
+            document.getElementById('karma-points').textContent = appState.karmaPoints;
+            document.getElementById('accuracy').textContent = '85%';
             
-            const progress = (userState.xp % 100);
+            const progress = (appState.xp % 100);
             document.getElementById('progress-fill').style.width = `${progress}%`;
+            document.getElementById('next-level-xp').textContent = 100 - progress;
         }
         
-        // Initialize on load
+        // ============ ACHIEVEMENT SYSTEM ============
+        function showAchievement(text) {
+            const popup = document.getElementById('achievement');
+            document.getElementById('achievement-text').textContent = text;
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3000);
+        }
+        
+        // ============ CONFETTI EFFECT ============
+        function createConfetti() {
+            const colors = ['#FFD700', '#FFA500', '#FF6347', '#4ECDC4', '#95E77E'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.opacity = Math.random();
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.transition = 'all 1s ease-out';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.style.top = '100%';
+                    confetti.style.opacity = '0';
+                    confetti.style.transform = `rotate(${Math.random() * 720}deg)`;
+                }, 10);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 1000);
+            }
+        }
+        
+        // ============ LOADING ============
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        // ============ FAB MENU ============
+        function toggleFab() {
+            createConfetti();
+            showAchievement('✨ आशीर्वाद प्राप्त!');
+            appState.karmaPoints += 5;
+            updateUI();
+        }
+        
+        // ============ STORAGE ============
+        function saveState() {
+            localStorage.setItem('jinasaraswati_state', JSON.stringify(appState));
+        }
+        
+        function loadState() {
+            const saved = localStorage.getItem('jinasaraswati_state');
+            if (saved) {
+                appState = JSON.parse(saved);
+            }
+        }
+        
+        // ============ ANIMATIONS ============
+        function startAnimations() {
+            // Add subtle animations to elements
+            setInterval(() => {
+                document.querySelectorAll('.universe-icon').forEach(icon => {
+                    icon.style.animation = 'none';
+                    setTimeout(() => {
+                        icon.style.animation = 'float 3s ease-in-out infinite';
+                    }, 10);
+                });
+            }, 10000);
+        }
+        
+        // ============ INITIALIZE ON LOAD ============
         window.onload = init;
         
-        // Register service worker
+        // ============ SERVICE WORKER ============
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker registered'))
-                .catch(err => console.log('Service Worker registration failed:', err));
+            navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
         }
     </script>
 </body>
