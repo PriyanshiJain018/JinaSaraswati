@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon</title></head>
+<body>
+<canvas id="c" width="192" height="192"></canvas>
+<script>
+const ctx = document.getElementById('c').getContext('2d');
+const gradient = ctx.createLinearGradient(0, 0, 192, 192);
+gradient.addColorStop(0, '#8B4513');
+gradient.addColorStop(1, '#DAA520');
+ctx.fillStyle = gradient;
+ctx.fillRect(0, 0, 192, 192);
+ctx.fillStyle = 'white';
+ctx.font = 'bold 48px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('जिन', 96, 110);
+// Right-click canvas and save as icon-192x192.png
+</script>
+</body>
+</html>
