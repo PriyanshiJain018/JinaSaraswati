@@ -606,8 +606,76 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+        /* Simple Responsive Fixes - Keeps Original Design */
+        @media (max-width: 768px) {
+            /* Prevent horizontal scroll */
+            html, body {
+                overflow-x: hidden;
+            }
+            
+            /* Scale down the nokashaya wheel instead of changing it */
+            .nokashaya-wheel {
+                transform: scale(0.75);
+                margin: -50px auto;
+            }
+            
+            /* Make text slightly smaller on mobile */
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            /* Stack buttons vertically on mobile */
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 80%;
+                max-width: 300px;
+            }
+            
+            /* Adjust padding for mobile */
+            .lesson-section {
+                padding: 1.5rem;
+            }
+            
+            /* Make cards stack on mobile */
+            .kashaya-grid, .stage-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Scale intensity meter for mobile */
+            .intensity-container {
+                padding: 2rem 1rem;
+            }
+            
+            .kashaya-selector {
+                flex-wrap: wrap;
+            }
+            
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* For very small screens */
+        @media (max-width: 480px) {
+            .nokashaya-wheel {
+                transform: scale(0.6);
+                margin: -80px auto;
+            }
+            
+            .soul-avatar {
+                width: 150px;
+                height: 150px;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="mobile-fix.css">
 </head>
 <body>
     <!-- Loading Screen -->
