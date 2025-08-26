@@ -1973,6 +1973,57 @@
             }
         }
 
+        // Add this entire helper function to your script
+        function showQuiz(questions, title) {
+            let currentQuestion = 0;
+            let score = 0;
+        
+            function displayQuestion() {
+                if (currentQuestion >= questions.length) {
+                    showModal(`${title} पूर्ण!`, `आपका स्कोर: ${score}/${questions.length}`);
+                    updateScore(score * 100); // Award points for the quiz
+                    // Add a soul cleansing animation here if the score is good
+                    return;
+                }
+        
+                const q = questions[currentQuestion];
+                const content = document.getElementById('lessonContent');
+                content.innerHTML = `
+                    <div class="quiz-container">
+                        <h2>${title}</h2>
+                        <p style="margin-bottom: 1rem;">प्रश्न ${currentQuestion + 1}/${questions.length}</p>
+                        <div class="question">${q.question}</div>
+                        <div class="options">
+                            ${q.options.map((opt, i) => `
+                                <div class="option" onclick="handleAnswer(${i}, ${q.correct})">
+                                    ${opt}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        
+            window.handleAnswer = function(selectedIndex, correctIndex) {
+                const options = document.querySelectorAll('.option');
+                options.forEach(opt => opt.style.pointerEvents = 'none'); // Disable further clicks
+        
+                if (selectedIndex === correctIndex) {
+                    options[selectedIndex].classList.add('correct');
+                    score++;
+                } else {
+                    options[selectedIndex].classList.add('incorrect');
+                    options[correctIndex].classList.add('correct');
+                }
+        
+                setTimeout(() => {
+                    currentQuestion++;
+                    displayQuestion();
+                }, 1500); // Wait 1.5 seconds before showing the next question
+            };
+        
+            displayQuestion();
+        }
         // Start Minigames
         function startMinigames() {
             document.getElementById('mainMenu').classList.remove('active');
