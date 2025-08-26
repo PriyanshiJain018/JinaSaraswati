@@ -606,17 +606,31 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-        /* Simple Responsive Fixes - Keeps Original Design */
+       /* Simple Responsive Fixes - Keeps Original Design */
         @media (max-width: 768px) {
             /* Prevent horizontal scroll */
             html, body {
                 overflow-x: hidden;
             }
             
-            /* Scale down the nokashaya wheel instead of changing it */
+            /* Fix the nokashaya wheel for mobile */
             .nokashaya-wheel {
-                transform: scale(0.75);
-                margin: -50px auto;
+                width: 300px !important;
+                height: 300px !important;
+                margin: 1rem auto !important;
+                position: relative;
+            }
+            
+            .nokashaya-wheel .wheel-center {
+                width: 80px !important;
+                height: 80px !important;
+                font-size: 0.9rem;
+            }
+            
+            .nokashaya-wheel .petal {
+                width: 80px !important;
+                height: 40px !important;
+                font-size: 0.7rem !important;
             }
             
             /* Make text slightly smaller on mobile */
@@ -626,6 +640,7 @@
             
             .section-title {
                 font-size: 1.5rem;
+                flex-wrap: wrap;
             }
             
             /* Stack buttons vertically on mobile */
@@ -641,7 +656,7 @@
             
             /* Adjust padding for mobile */
             .lesson-section {
-                padding: 1.5rem;
+                padding: 1.5rem 1rem;
             }
             
             /* Make cards stack on mobile */
@@ -661,18 +676,31 @@
             .info-cards {
                 grid-template-columns: 1fr;
             }
+            
+            /* Fix soul avatar */
+            .soul-avatar {
+                width: 150px;
+                height: 150px;
+            }
         }
         
         /* For very small screens */
         @media (max-width: 480px) {
             .nokashaya-wheel {
-                transform: scale(0.6);
-                margin: -80px auto;
+                width: 250px !important;
+                height: 250px !important;
             }
             
-            .soul-avatar {
-                width: 150px;
-                height: 150px;
+            .nokashaya-wheel .petal {
+                width: 70px !important;
+                height: 35px !important;
+                font-size: 0.6rem !important;
+            }
+            
+            .nokashaya-wheel .wheel-center {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 0.8rem;
             }
         }
     </style>
