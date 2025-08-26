@@ -2354,10 +2354,36 @@
             showModal('तीव्रता परीक्षा', 'जल्द ही आ रही है...');
             updateScore(100);
         }
-
         function testNoKashaya() {
-            showModal('नोकषाय परीक्षा', 'जल्द ही आ रही है...');
-            updateScore(100);
+            const questions = [
+                {
+                    question: 'कुल कितनी नोकषाय होती हैं? (How many No-kashayas are there in total?)',
+                    options: ['७', '८', '९', '१०'],
+                    correct: 2
+                },
+                {
+                    question: 'इष्ट वस्तु के वियोग से उत्पन्न होने वाले क्लेश को क्या कहते हैं? (The suffering that arises from separation from a desired object is called?)',
+                    options: ['रति (Attachment)', 'शोक (Sorrow)', 'भय (Fear)', 'हास्य (Laughter)'],
+                    correct: 1
+                },
+                {
+                    question: 'एक व्यक्ति को किसी स्थान या वस्तु से बहुत अधिक लगाव (प्रीति) है। यह किस नोकषाय का प्रभाव है? (A person has a strong attachment (preeti) to a place or thing. This is the effect of which No-kashaya?)',
+                    options: ['अरति (Aversion)', 'जुगुप्सा (Disgust)', 'रति (Attachment)', 'स्त्रीवेद (Feminine Inclination)'],
+                    correct: 2
+                },
+                {
+                    question: 'किसी वस्तु को देखकर ग्लानि (disgust) का भाव उत्पन्न होना, यह किस नोकषाय के उदय से होता है? (Feeling a sense of disgust upon seeing something is caused by the rise of which No-kashaya?)',
+                    options: ['भय (Fear)', 'शोक (Sorrow)', 'हास्य (Laughter)', 'जुगुप्सा (Disgust)'],
+                    correct: 3
+                },
+                {
+                    question: '"नोकषाय" में "नो" शब्द का क्या अर्थ है? (What does the word "No" in "No-kashaya" signify?)',
+                    options: ['पूर्ण (Complete)', 'नहीं (Not)', 'ईषत् / किंचित् (Slight / Minor)', 'अज्ञात (Unknown)'],
+                    correct: 2
+                }
+            ];
+            
+            showQuiz(questions, 'नोकषाय परीक्षा');
         }
 
         function checkAnalogyMatches() {
